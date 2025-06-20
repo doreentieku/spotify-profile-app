@@ -3,7 +3,6 @@
 
 import { useSpotifyAuth } from '@/lib/useSpotifyAuth';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
 import { useEffect, useState } from 'react';
 
 
@@ -22,7 +21,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     return (
         <div className="flex h-screen bg-violet-900 text-white">
-            <Sidebar accessToken={accessToken} />
             <main className="flex-1 p-6 overflow-y-auto">{children}</main>
         </div>
     );
