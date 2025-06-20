@@ -54,7 +54,7 @@ export default function LoginPage() {
         };
 
         exchangeToken();
-    }, []);
+    }, [router]);
 
     useEffect(() => {
         const token = localStorage.getItem('spotify_access_token');

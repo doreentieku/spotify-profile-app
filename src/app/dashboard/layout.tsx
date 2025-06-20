@@ -3,7 +3,7 @@
 
 import { useSpotifyAuth } from '@/lib/useSpotifyAuth';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
