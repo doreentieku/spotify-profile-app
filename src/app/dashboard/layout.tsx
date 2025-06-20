@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (loading || !accessToken) return <div className="text-white p-6">Loading...</div>;
 
     return (
-        <div className="flex h-screen bg-violet-900 text-white">
+        <div className="">
             <main className="flex-1 p-6 overflow-y-auto">{children}</main>
         </div>
     );
