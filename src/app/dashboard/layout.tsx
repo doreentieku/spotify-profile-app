@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { token: accessToken, loading } = useSpotifyAuth(); // Renamed `token` to `accessToken` for clarity
     const router = useRouter();
-    const [deviceId, setDeviceId] = useState<string | null>(null); // Add this state
 
     useEffect(() => {
         if (!loading && !accessToken) {

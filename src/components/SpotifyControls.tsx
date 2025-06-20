@@ -7,25 +7,16 @@ import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
 
 export default function SpotifyControls() {
   const [isPaused, setIsPaused] = useState<boolean>(true);
-  const [hasLoadedTrack, setHasLoadedTrack] = useState(false);
 
   const player = getSpotifyPlayer();
 
   useEffect(() => {
     if (!player) return;
 
-    player.addListener("player_state_changed", (state) => {
-      if (state && state.track_window && state.track_window.current_track) {
-        setHasLoadedTrack(true);
+    player.addListener("player_state_changed", (state: unknown) => {
+      if (typeof state === "object" && state && "paused" in state) {
+        setIsPaused((state as { paused: boolean }).paused);
       }
-    });
-  }, [player]);
-
-  useEffect(() => {
-    if (!player) return;
-
-    player.addListener("player_state_changed", (state: any) => {
-      setIsPaused(state.paused);
     });
   }, [player]);
 

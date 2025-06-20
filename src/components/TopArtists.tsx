@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 interface TopArtistsProps {
   accessToken: string;
@@ -102,9 +103,11 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
                 key={artist.id}
                 className="w-60 min-w-[15rem] p-4 bg-white/10 backdrop-blur-none border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
               >
-                <img
+                <Image
                   src={artist.images[0]?.url}
                   alt={artist.name}
+                  width={300}
+                  height={300}
                   className="w-full h-40 object-cover rounded-lg mb-3"
                 />
                 <h3 className="text-lg font-semibold">{artist.name}</h3>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 interface RecentlyPlayedTracksProps {
   accessToken: string;
@@ -156,9 +157,11 @@ export default function RecentlyPlayedTracks({
                 key={track.id}
                 className="w-60 min-w-[15rem] p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
               >
-                <img
+                <Image
                   src={track.album.images[0]?.url}
                   alt={track.name}
+                  width={300}
+                  height={300}
                   className="w-full h-40 object-cover rounded-lg mb-2"
                 />
                 <h3 className="text-md font-semibold mb-1">{track.name}</h3>

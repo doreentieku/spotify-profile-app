@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 interface TopTracksProps {
   accessToken: string;
@@ -110,7 +111,6 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value as any)}
           className="bg-zinc-800 text-white border border-white/30 text-sm rounded-md px-2 py-1 focus:outline-none"
-
         >
           <option value="short_term">Last 4 weeks</option>
           <option value="medium_term">Last 6 months</option>
@@ -141,9 +141,11 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
                 key={track.id}
                 className="w-64 min-w-[16rem] p-4 bg-white/10 backdrop-blur-none border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
               >
-                <img
+                <Image
                   src={track.album.images[0]?.url}
                   alt={track.name}
+                  width={300}
+                  height={300}
                   className="w-full h-40 object-cover rounded-lg mb-3"
                 />
                 <h3 className="text-md font-bold mb-1">
