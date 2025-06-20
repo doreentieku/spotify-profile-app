@@ -4,8 +4,14 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
+type TimeRange = "short_term" | "medium_term" | "long_term";
+
 interface TopArtistsProps {
   accessToken: string;
+}
+
+interface SpotifyTopArtistsResponse {
+  items: Artist[];
 }
 
 interface Artist {
@@ -18,9 +24,11 @@ interface Artist {
 }
 
 export default function TopArtists({ accessToken }: TopArtistsProps) {
-  const [timeRange, setTimeRange] = useState<
-    "short_term" | "medium_term" | "long_term"
-  >("medium_term");
+  // const [timeRange, setTimeRange] = useState<
+  //   "short_term" | "medium_term" | "long_term"
+  // >("medium_term");
+  const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
+
   const [artists, setArtists] = useState<Artist[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,10 +46,10 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
 
         if (!res.ok) throw new Error("Failed to fetch top artists");
 
-        const data = await res.json();
+        const data: SpotifyTopArtistsResponse = await res.json();
         setArtists(data.items);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
       }
     };
 
@@ -71,7 +79,7 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
         <h2 className="text-lg font-bold text-white pl-5">Top Artists</h2>
         <select
           value={timeRange}
-          onChange={(e) => setTimeRange(e.target.value as any)}
+          onChange={(e) => setTimeRange(e.target.value as TimeRange)}
           className="bg-zinc-800 text-white border border-white/30 text-sm rounded-md px-2 py-1 focus:outline-none"
         >
           <option value="short_term">Last 4 weeks</option>

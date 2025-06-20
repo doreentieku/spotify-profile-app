@@ -9,8 +9,15 @@ import TopArtists from '@/components/TopArtists';
 import LogoutButton from '@/components/LogoutButton';
 import PlayerBar from '@/components/PlayerBar';
 
+interface SpotifyProfile {
+  display_name: string;
+  country: string;
+}
+
 export default function DashboardPage() {
-  const [profile, setProfile] = useState<any>(null);
+  // const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<SpotifyProfile | null>(null);
+
   const [token, setToken] = useState<string | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
 

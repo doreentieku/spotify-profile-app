@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
+interface SpotifyRecentlyPlayedResponse {
+  items: {
+    track: Track;
+    played_at: string;
+  }[];
+}
+
 interface RecentlyPlayedTracksProps {
   accessToken: string;
   deviceId: string | null;
@@ -43,19 +50,15 @@ export default function RecentlyPlayedTracks({
 
         if (!res.ok) throw new Error("Failed to fetch recently played tracks");
 
-        const data = await res.json();
-        // console.log("data", data)
+        const data: SpotifyRecentlyPlayedResponse = await res.json();
         const uniqueTracks = Array.from(
           new Map(
-            data.items.map((item: { track: Track }) => [
-              item.track.id,
-              item.track,
-            ])
+            data.items.map((item) => [item.track.id, item.track])
           ).values()
-        ) as Track[];
+        );
         setTracks(uniqueTracks);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
       }
     };
 
