@@ -59,7 +59,7 @@ export default function LoginPage() {
     useEffect(() => {
         const token = localStorage.getItem('spotify_access_token');
         if (token) router.replace('/dashboard');
-    }, []);
+    }, [router]);
 
 
 

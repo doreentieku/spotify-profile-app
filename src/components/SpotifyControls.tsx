@@ -24,7 +24,12 @@ export default function SpotifyControls() {
     if (!player) return;
     const state = await player.getCurrentState();
     if (!state) return;
-    state.paused ? await player.resume() : await player.pause();
+    // state.paused ? await player.resume() : await player.pause();
+    if (state.paused) {
+    await player.resume();
+} else {
+    await player.pause();
+}
   };
 
   const handleSkipNext = async () => {
