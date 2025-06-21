@@ -65,7 +65,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
   const scrollContainerTopTracks = (direction: "left" | "right") => {
     const container = document.getElementById("track-scroll-container");
     if (!container) return;
-    const scrollAmount = 300;
+    const scrollAmount = 200;
     container.scrollBy({
       left: direction === "right" ? scrollAmount : -scrollAmount,
       behavior: "smooth",

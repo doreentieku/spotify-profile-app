@@ -35,7 +35,7 @@ export default function TopArtistHighlight({ token }: { token: string }) {
       try {
         // Step 1: Get Top Artist
         const artistRes = await fetch(
-          "https://api.spotify.com/v1/me/top/artists?limit=5",
+          "https://api.spotify.com/v1/me/top/artists?limit=6",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -99,7 +99,7 @@ export default function TopArtistHighlight({ token }: { token: string }) {
     // Scroll-based background rotation
     if (backgroundRef.current) {
       gsap.to(backgroundRef.current, {
-        rotate: 500,
+        rotate: 620,
         ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,

@@ -9,6 +9,8 @@ import TopArtists from "@/components/TopArtists";
 import LogoutButton from "@/components/LogoutButton";
 import PlayerBar from "@/components/PlayerBar";
 import TopArtistHighlight from "@/components/TopArtistHighlight";
+// import Link from "next/link";
+import UserProfile from "@/components/UserProfile";
 
 interface SpotifyProfile {
   display_name: string;
@@ -17,7 +19,6 @@ interface SpotifyProfile {
 }
 
 export default function DashboardPage() {
-  // const [profile, setProfile] = useState<any>(null);
   const [profile, setProfile] = useState<SpotifyProfile | null>(null);
 
   const [token, setToken] = useState<string | null>(null);
@@ -52,27 +53,10 @@ export default function DashboardPage() {
     <div className="bg-gradient-to-br from-black via-zinc-900 to-black min-h-screen text-white relative pb-28">
       {/* Header */}
       <header className="flex justify-between items-center px-6 py-4 text-sm">
-        <div>
-          <nav className="space-x-6 md:flex">
-            <a href="#" className="text-gray-400 hover:text-white">
-              Home
-            </a>
-            <a href="#" className="hover:text-white">
-              Work
-            </a>
-          </nav>
-          <h1 className="text-6xl font-extrabold tracking-tight uppercase mb-1">
-            Welcome, {profile.display_name}
-          </h1>
-          <p className="text-white/70 text-sm uppercase">
-            account: {profile.product}{" "}
-          </p>
-          <p className="text-white/70 text-sm uppercase">
-            {" "}
-            country: {profile.country}
-          </p>
-        </div>
-        <LogoutButton
+        <UserProfile
+          displayName={profile.display_name}
+          country={profile.country}
+          product={profile.product}
           onLogout={() => {
             localStorage.removeItem("spotify_access_token");
             localStorage.removeItem("spotify_code_verifier");

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { FaSpotify } from "react-icons/fa";
+import Image from "next/image";
 
 
 const generateRandomString = (length: number) => {
@@ -91,17 +92,19 @@ export default function LoginPage() {
     localStorage.setItem("spotify_pkce_state", state);
     localStorage.setItem("spotify_code_verifier", codeVerifier);
 
-    const scope = [
-      "user-read-private",
-      "user-read-email",
-      "user-top-read",
-      "playlist-read-private",
-      "user-read-recently-played",
-      "streaming",
-      "user-modify-playback-state",
-      "user-read-playback-state",
-      "user-read-currently-playing",
-    ].join(" ");
+   const scope = [
+  "user-read-private",
+  "user-read-email",
+  "user-top-read",
+  "playlist-read-private",
+  "playlist-modify-private",
+  "streaming",
+  "user-modify-playback-state",
+  "user-read-playback-state",
+  "user-read-currently-playing",
+   "user-read-recently-played",
+].join(" ");
+
 
     const params = new URLSearchParams({
       response_type: "code",
@@ -117,18 +120,20 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative flex flex-grow h-screen text-white overflow-hidden bg-black">
+    <main className="relative flex flex-grow h-screen text-white overflow-hidden">
       {/* Background Video */}
       <video
         autoPlay
         muted
         loop
         playsInline
-        className="absolute inset-0 w-full h-full object-cover blur-sm z-0"
+        className="absolute inset-0 w-full h-full object-cover blur-[5px] z-0"
       >
-        <source src="/Nighttime_Video_Generated.mp4" type="video/mp4" />
+        <source src="/video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
+
+      {/* <Image src={"/window.png"} alt={""} width={200} height={300} className="absolute inset-0 w-full h-full object-cover blur-none z-0"></Image> */}
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/70 z-0" />
