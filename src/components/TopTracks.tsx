@@ -35,7 +35,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
     const fetchTopTracks = async () => {
       try {
         const res = await fetch(
-          `https://api.spotify.com/v1/me/top/tracks?limit=15&time_range=${timeRange}`,
+          `https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -106,13 +106,14 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
     }
   }
 
+
   return (
     <div className="max-w-8xl mx-auto">
       <div className="flex justify-between items-center mb-4 px-4">
         <h2 className="text-lg font-bold text-white pl-5">Top Tracks</h2>
         <select
           value={timeRange}
-          onChange={(e) => setTimeRange(e.target.value as TimeRange)}
+           onChange={(e) => setTimeRange(e.target.value as TimeRange)}
           className="bg-zinc-800 text-white border border-white/30 text-sm rounded-md px-2 py-1 focus:outline-none"
         >
           <option value="short_term">Last 4 weeks</option>
@@ -143,6 +144,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
               <div
                 key={track.id}
                 className="w-64 min-w-[16rem] p-4 bg-white/10 backdrop-blur-none border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
+                
               >
                 <Image
                   src={track.album.images[0]?.url}
