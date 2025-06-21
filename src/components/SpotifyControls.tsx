@@ -24,7 +24,6 @@ export default function SpotifyControls() {
     if (!player) return;
     const state = await player.getCurrentState();
     if (!state) return;
-    // state.paused ? await player.resume() : await player.pause();
     if (state.paused) {
     await player.resume();
 } else {
@@ -41,7 +40,7 @@ export default function SpotifyControls() {
   };
 
   return (
-    <div className="flex justify-center items-center space-x-6 p-4 mt-6 bg-black/40 rounded-lg w-fit mx-auto">
+    <div className="flex justify-center items-center space-x-6 p-4 mt-6 rounded-lg w-fit mx-auto">
       <div className="flex justify-center items-center space-x-6">
         <button className="cursor-pointer" onClick={handleSkipPrev}>
           <SkipBack />

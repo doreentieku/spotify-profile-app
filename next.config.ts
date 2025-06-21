@@ -1,13 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["http://127.0.0.1:3000"],
   images: {
-    domains: ['i.scdn.co'], // Spotify's CDN for profile images
-  },
-  env: {
-    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
-    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
-    SPOTIFY_REDIRECT_URI: process.env.SPOTIFY_REDIRECT_URI,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.scdn.co", // spotify images url
+        pathname: "/**",
+      },
+    ],
   },
 };
 

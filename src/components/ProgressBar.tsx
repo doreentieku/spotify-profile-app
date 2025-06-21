@@ -27,7 +27,7 @@ export default function ProgressBar() {
   }, [player]);
 
   return (
-    <div className="w-full px-6 flex items-center space-x-2 text-white text-xs">
+    <div className="w-full flex items-center space-x-2 text-white text-xs">
       <span>{formatTime(position)}</span>
       <div className="relative w-full h-1 bg-white/30 rounded overflow-hidden">
         <div

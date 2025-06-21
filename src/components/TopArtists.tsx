@@ -24,9 +24,6 @@ interface Artist {
 }
 
 export default function TopArtists({ accessToken }: TopArtistsProps) {
-  // const [timeRange, setTimeRange] = useState<
-  //   "short_term" | "medium_term" | "long_term"
-  // >("medium_term");
   const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
 
   const [artists, setArtists] = useState<Artist[]>([]);

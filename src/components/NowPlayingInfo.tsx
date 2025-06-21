@@ -48,7 +48,7 @@ export default function NowPlayingInfo({ accessToken }: { accessToken: string })
   }
 
   return (
-    <div className="flex items-center space-x-4 w-[300px]">
+    <div className="flex items-center space-x-4 max-w-xs w-full">
       <Image src={track.album.images[0].url} alt={track.name} width={300} height={300} className="w-16 h-16 rounded" />
       <div>
         <p className="text-white text-sm font-semibold truncate">{track.name}</p>

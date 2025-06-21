@@ -26,9 +26,6 @@ interface Track {
 }
 
 export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
-  // const [timeRange, setTimeRange] = useState<
-  //   "short_term" | "medium_term" | "long_term"
-  // >("medium_term");
   const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
 
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -38,7 +35,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
     const fetchTopTracks = async () => {
       try {
         const res = await fetch(
-          `https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=${timeRange}`,
+          `https://api.spotify.com/v1/me/top/tracks?limit=15&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -115,8 +112,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
         <h2 className="text-lg font-bold text-white pl-5">Top Tracks</h2>
         <select
           value={timeRange}
-          // onChange={(e) => setTimeRange(e.target.value as any)}
-           onChange={(e) => setTimeRange(e.target.value as TimeRange)}
+          onChange={(e) => setTimeRange(e.target.value as TimeRange)}
           className="bg-zinc-800 text-white border border-white/30 text-sm rounded-md px-2 py-1 focus:outline-none"
         >
           <option value="short_term">Last 4 weeks</option>

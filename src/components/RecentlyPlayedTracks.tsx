@@ -122,7 +122,7 @@ export default function RecentlyPlayedTracks({
       console.error("Failed to play track", err);
     }
   }
-  console.log("track", filteredTracks);
+
   return (
     <div className="max-w-6xl mx-auto px-4">
       <h2 className="text-lg font-bold text-white mb-2">

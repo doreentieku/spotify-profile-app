@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Spot-icizr",
-  description: "Dashboard with spotify.",
+  title: "Spoticizr",
+  description: "Orchestrate Your Spotify Experience..",
 };
 
 export default function RootLayout({
