@@ -1,4 +1,4 @@
-// src/app/api/search/route.ts
+// src/app/api/recommendations/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

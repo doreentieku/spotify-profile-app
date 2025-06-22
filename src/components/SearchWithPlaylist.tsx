@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import PlayButton from "@/components/PlayButton";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface Track {
     id: string;
@@ -75,6 +77,29 @@ export default function SearchWithPlaylist({
         }
     };
 
+    const searchTracks = async (query: string) => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || "Search failed");
+
+            setTracks(data.items);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : String(err));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     useEffect(() => {
         if (accessToken && genres.length > 0) {
             fetchSearchResult();
@@ -146,38 +171,10 @@ export default function SearchWithPlaylist({
     };
 
 
-    async function playTrack(uri: string) {
-        if (!accessToken || !deviceId) return;
-
-        try {
-            await fetch("https://api.spotify.com/v1/me/player", {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    device_ids: [deviceId],
-                    play: false,
-                }),
-            });
-
-            await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ uris: [uri] }),
-            });
-        } catch (err) {
-            console.error("Failed to play track", err);
-        }
-    }
-
     return (
         <div className="px-6 py-8 space-y-10 max-w-7xl mx-auto text-white">
             <div className="flex flex-col lg:flex-row gap-6 mb-10">
+
                 {/* Genre Selection */}
                 <div className="flex-1 p-4 bg-zinc-900 rounded-xl border border-white/10">
                     <h2 className="text-lg font-bold text-white mb-4">Select Genres</h2>
@@ -259,13 +256,13 @@ export default function SearchWithPlaylist({
                         </button>
                     </div>
                 )}
-            </div>
+                {message && (
+                    <div className="fixed top-29 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-white text-center bg-black/70 rounded-md border border-white/10 z-50">
+                        {message}
+                    </div>
+                )}
 
-            {message && (
-                <div className="fixed top-0 mt-2 text-sm text-center text-white bg-black/40 px-3 py-2 rounded-md border border-white/10 z-10">
-                    {message}
-                </div>
-            )}
+            </div>
 
             {/* Track Cards Always Visible */}
             {error && <p className="text-red-400">{error}</p>}
@@ -290,18 +287,17 @@ export default function SearchWithPlaylist({
                                 {track.artists.map((a) => a.name).join(", ")}
                             </div>
 
-                            <div className="flex gap-2 mt-2">
-                                <button
-                                    onClick={() => playTrack(track.uri)}
-                                    className="bg-green-500 hover:bg-green-600 text-xs px-2 py-1 rounded-full cursor-pointer"
-                                >
-                                    ▶ Play
-                                </button>
+                            <div className="flex gap-4 mt-2">
+                                <PlayButton
+                                    uri={track.uri}
+                                    accessToken={accessToken}
+                                    deviceId={deviceId}
+                                />
                                 <button
                                     onClick={() => addToPlaylist(track)}
-                                    className="bg-blue-500 hover:bg-blue-600 text-xs px-2 py-1 rounded-full cursor-pointer"
+                                    className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full bg-green-500/20 hover:bg-green-800/80 transition duration-200 shadow-lg cursor-pointer"
                                 >
-                                    ➕ Add
+                                    <IoIosAddCircleOutline />
                                 </button>
                             </div>
                         </div>

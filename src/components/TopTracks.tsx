@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import PlayButton from "@/components/PlayButton";
+
 type TimeRange = "short_term" | "medium_term" | "long_term";
 interface SpotifyTopTracksResponse {
   items: Track[];
@@ -72,48 +74,13 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
     });
   };
 
-  async function playTrack(uri: string) {
-    if (!accessToken || !deviceId) return;
-
-    try {
-      // 1. Transfer playback to Web SDK device
-      await fetch("https://api.spotify.com/v1/me/player", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          device_ids: [deviceId],
-          play: false, // Don't play yet — we'll load the track manually
-        }),
-      });
-
-      // 2. Play the track on that device
-      await fetch(
-        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ uris: [uri] }),
-        }
-      );
-    } catch (err) {
-      console.error("Failed to play track", err);
-    }
-  }
-
-
   return (
     <div className="max-w-8xl mx-auto">
       <div className="flex justify-between items-center mb-4 px-4">
         <h2 className="text-lg font-bold text-white pl-5">Top Tracks</h2>
         <select
           value={timeRange}
-           onChange={(e) => setTimeRange(e.target.value as TimeRange)}
+          onChange={(e) => setTimeRange(e.target.value as TimeRange)}
           className="bg-zinc-800 text-white border border-white/30 text-sm rounded-md px-2 py-1 focus:outline-none"
         >
           <option value="short_term">Last 4 weeks</option>
@@ -144,7 +111,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
               <div
                 key={track.id}
                 className="w-64 min-w-[16rem] p-4 bg-white/10 backdrop-blur-none border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
-                
+
               >
                 <Image
                   src={track.album.images[0]?.url}
@@ -182,13 +149,11 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
                     Popularity: {track.popularity}/100
                   </div>
                 </div>
-
-                <button
-                  onClick={() => playTrack(track.uri)}
-                  className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full backdrop-blur-md bg-white/10 hover:bg-green-300/80 transition duration-200 shadow-lg cursor-pointer"
-                >
-                  ▶ Play
-                </button>
+                <PlayButton
+                  uri={track.uri}
+                  accessToken={accessToken}
+                  deviceId={deviceId}
+                />
               </div>
             ))}
           </div>

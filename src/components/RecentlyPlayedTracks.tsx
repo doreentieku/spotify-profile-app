@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import PlayButton from "@/components/PlayButton";
 
 interface SpotifyRecentlyPlayedResponse {
   items: {
@@ -196,13 +197,18 @@ export default function RecentlyPlayedTracks({
                     Popularity: {track.popularity}/100
                   </div>
                 </div>
-
+                {/* 
                 <button
                   onClick={() => playTrack(track.uri)}
                   className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full backdrop-blur-md bg-white/10 hover:bg-green-300/80 transition duration-200 shadow-lg cursor-pointer"
                 >
                   ▶ Play
-                </button>
+                </button> */}
+                <PlayButton
+                  uri={track.uri}
+                  accessToken={accessToken}
+                  deviceId={deviceId}
+                />
               </div>
             ))}
           </div>
