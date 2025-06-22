@@ -92,18 +92,18 @@ export default function LoginPage() {
     localStorage.setItem("spotify_pkce_state", state);
     localStorage.setItem("spotify_code_verifier", codeVerifier);
 
-   const scope = [
-  "user-read-private",
-  "user-read-email",
-  "user-top-read",
-  "playlist-read-private",
-  "playlist-modify-private",
-  "streaming",
-  "user-modify-playback-state",
-  "user-read-playback-state",
-  "user-read-currently-playing",
-   "user-read-recently-played",
-].join(" ");
+    const scope = [
+      "user-read-private",
+      "user-read-email",
+      "user-top-read",
+      "playlist-read-private",
+      "playlist-modify-private",
+      "streaming",
+      "user-modify-playback-state",
+      "user-read-playback-state",
+      "user-read-currently-playing",
+      "user-read-recently-played",
+    ].join(" ");
 
 
     const params = new URLSearchParams({
@@ -164,10 +164,10 @@ export default function LoginPage() {
             onClick={loginWithSpotify}
             className="bg-green-500/20 hover:bg-green-600/50 backdrop-blur-md rounded-lg px-5 py-3 font-bold inline-flex items-center space-x-3 text-xl md:text-2xl cursor-pointer"
           >
-              <FaSpotify />
+            <FaSpotify />
             <span>Login with Spotify</span>
           </button>
-          
+
         </div>
       </div>
     </main>

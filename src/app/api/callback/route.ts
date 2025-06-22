@@ -5,6 +5,9 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { code, codeVerifier } = body;
 
+  console.log("🌱 SPOTIFY_CLIENT_ID:", process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID);
+  console.log("🌱 SPOTIFY_REDIRECT_URI:", process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI);
+
   // Exchange code for token using Spotify API
   const response = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',

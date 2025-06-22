@@ -6,11 +6,9 @@ import MostActiveHour from "@/components/MostActiveHour";
 import RecentlyPlayedTracks from "@/components/RecentlyPlayedTracks";
 import TopTracks from "@/components/TopTracks";
 import TopArtists from "@/components/TopArtists";
-import LogoutButton from "@/components/LogoutButton";
-import PlayerBar from "@/components/PlayerBar";
 import TopArtistHighlight from "@/components/TopArtistHighlight";
-// import Link from "next/link";
 import UserProfile from "@/components/UserProfile";
+import TopGenres from "@/components/TopGenres"
 
 interface SpotifyProfile {
   display_name: string;
@@ -40,6 +38,7 @@ export default function DashboardPage() {
     if (token) initializeSpotifyPlayer(token, setDeviceId);
   }, [token]);
 
+
   if (!profile || !token)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black to-zinc-900 text-white">
@@ -57,6 +56,7 @@ export default function DashboardPage() {
           displayName={profile.display_name}
           country={profile.country}
           product={profile.product}
+          accessToken={token}
           onLogout={() => {
             localStorage.removeItem("spotify_access_token");
             localStorage.removeItem("spotify_code_verifier");
@@ -90,10 +90,11 @@ export default function DashboardPage() {
         <div>
           <TopArtists accessToken={token} />
         </div>
-      </section>
 
-      {/* PlayerBar */}
-      <PlayerBar accessToken={token} />
+        <div>
+          <TopGenres accessToken={token} />
+        </div>
+      </section>
     </div>
   );
 }

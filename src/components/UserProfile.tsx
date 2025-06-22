@@ -1,12 +1,14 @@
 'use client';
 
 import LogoutButton from './LogoutButton';
+import PlayerBar from "@/components/PlayerBar";
 
 interface Props {
   displayName: string;
   country: string;
   product: string;
   onLogout: () => void;
+  accessToken: string
 }
 
 export default function UserProfile({
@@ -15,14 +17,17 @@ export default function UserProfile({
   product,
   onLogout,
 }: Props) {
+
+  const token = localStorage.getItem('spotify_access_token') || '';
+
   return (
     <div>
       <nav className="space-x-6 md:flex mb-2">
         <a href="/dashboard" className="text-gray-400 hover:text-white">
           Home
         </a>
-        <a href="/dashboard/ai-playlist" className="text-gray-400 hover:text-white">
-          Playlist
+        <a href="/dashboard/playlist" className="text-gray-400 hover:text-white">
+          Create Playlist
         </a>
       </nav>
       <h1 className="text-6xl font-extrabold tracking-tight uppercase mb-1">
@@ -31,6 +36,9 @@ export default function UserProfile({
       <p className="text-white/70 text-sm uppercase">{product}</p>
       <p className="text-white/70 text-sm uppercase">country: {country}</p>
       <LogoutButton onLogout={onLogout} />
+
+      {/* PlayerBar */}
+      <PlayerBar accessToken={token} />
     </div>
   );
 }

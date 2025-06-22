@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import CreatePlaylist from '@/components/CreatePlaylist';
 import UserProfile from "@/components/UserProfile";
+import { initializeSpotifyPlayer } from "@/lib/spotifyPlayer";
+import SearchWithPlaylist from '@/components/SearchWithPlaylist';
 
 interface SpotifyProfile {
   display_name: string;
@@ -11,14 +12,15 @@ interface SpotifyProfile {
 }
 
 export default function AIPlaylistPage() {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [profile, setProfile] = useState<SpotifyProfile | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
+
 
   useEffect(() => {
     const token = localStorage.getItem('spotify_access_token');
+    setToken(token);
     if (!token) return;
-    
-    setAccessToken(token);
 
     fetch("https://api.spotify.com/v1/me", {
       headers: { Authorization: `Bearer ${token}` },
@@ -28,7 +30,12 @@ export default function AIPlaylistPage() {
       .catch(() => setProfile(null));
   }, []);
 
-  if (!accessToken || !profile) {
+
+  useEffect(() => {
+    if (token) initializeSpotifyPlayer(token, setDeviceId);
+  }, [token]);
+
+  if (!token || !profile) {
     return (
       <div className="text-white text-center mt-10">
         Loading Spotify access and profile...
@@ -44,6 +51,7 @@ export default function AIPlaylistPage() {
           displayName={profile.display_name}
           country={profile.country}
           product={profile.product}
+          accessToken={token!}
           onLogout={() => {
             localStorage.removeItem("spotify_access_token");
             localStorage.removeItem("spotify_code_verifier");
@@ -53,9 +61,8 @@ export default function AIPlaylistPage() {
         />
       </header>
 
-      {/* Playlist Tools */}
       <section className="space-y-10 px-6">
-        <CreatePlaylist accessToken={accessToken} />
+        <SearchWithPlaylist accessToken={token} deviceId={deviceId} />
       </section>
     </div>
   );
