@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import useSpotifyLogout from "@/lib/useSpotifyLogout";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -28,6 +29,7 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
 
   const [artists, setArtists] = useState<Artist[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const logout = useSpotifyLogout();
 
   useEffect(() => {
     const fetchTopArtists = async () => {
@@ -43,7 +45,22 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
 
         if (!res.ok) throw new Error("Failed to fetch top artists");
 
-        const data: SpotifyTopArtistsResponse = await res.json();
+        const data: SpotifyTopArtistsResponse & {
+          error?: { message?: string };
+        } = await res.json();
+
+        if (!res.ok) {
+          const msg = data.error?.message || "";
+          if (
+            msg.toLowerCase().includes("token") ||
+            msg.toLowerCase().includes("expired") ||
+            res.status === 401
+          ) {
+            logout();
+            return;
+          }
+          throw new Error(msg || "Failed to fetch top artists");
+        }
         setArtists(data.items);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
@@ -52,7 +69,6 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
 
     if (accessToken) fetchTopArtists();
   }, [accessToken, timeRange]);
-  // console.log("Artists", artists)
 
   function getPopularityColor(popularity: number) {
     if (popularity >= 70) return "bg-green-400";

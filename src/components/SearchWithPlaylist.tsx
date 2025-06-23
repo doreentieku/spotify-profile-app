@@ -5,6 +5,7 @@ import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import useSpotifyProfile from "@/lib/useSpotifyProfile";
+import useSpotifyLogout from "@/lib/useSpotifyLogout";
 
 interface Track {
   id: string;
@@ -53,6 +54,8 @@ export default function SearchWithPlaylist({
   const [genres, setGenres] = useState<string[]>(["chill"]);
   const profile = useSpotifyProfile(accessToken);
 
+  const logout = useSpotifyLogout();
+
 
   useEffect(() => {
     if (profile) {
@@ -75,8 +78,19 @@ export default function SearchWithPlaylist({
       });
 
       const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.error?.message || "Failed to fetch tracks");
+
+      if (!res.ok) {
+        const msg = data.error?.message || "";
+        if (
+          msg.toLowerCase().includes("token") ||
+          msg.toLowerCase().includes("expired") ||
+          res.status === 401
+        ) {
+          logout(); 
+          return;
+        }
+        throw new Error(msg || "Failed to fetch tracks");
+      }
 
       setTracks(data.items);
     } catch (err) {
@@ -118,54 +132,68 @@ export default function SearchWithPlaylist({
   };
 
   const createPlaylist = async () => {
-      if (!playlistName || !profile || selectedTracks.length === 0) return;
+    if (!playlistName || !profile || selectedTracks.length === 0) return;
 
-      try {
-          const res = await fetch(`https://api.spotify.com/v1/users/${profile.id}/playlists`, {
-              method: "POST",
-              headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                  name: playlistName,
-                  description: playlistDesc,
-                  public: false,
-              }),
-          });
+    try {
+      const res = await fetch(
+        `https://api.spotify.com/v1/users/${profile.id}/playlists`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: playlistName,
+            description: playlistDesc,
+            public: false,
+          }),
+        }
+      );
 
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error?.message || "Failed to create playlist");
-
-          await fetch(`https://api.spotify.com/v1/playlists/${data.id}/tracks`, {
-              method: "POST",
-              headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                  uris: selectedTracks.map((t) => t.uri),
-              }),
-          });
-
-          setMessage(`Playlist "${data.name}" created!`);
-          setTimeout(() => setMessage(""), 5000); // <-- clear message after 4s
-
-          setSelectedTracks([]);
-          setPlaylistName("");
-          setPlaylistDesc("");
-      } catch (err) {
-          console.error(err);
-          setMessage("Failed to create playlist");
-          setTimeout(() => setMessage(""), 5000);
+      const data = await res.json();
+      if (!res.ok) {
+        const msg = data.error?.message || "";
+        if (
+          msg.toLowerCase().includes("token") ||
+          msg.toLowerCase().includes("expired") ||
+          res.status === 401
+        ) {
+          logout(); 
+          return;
+        }
+        throw new Error(msg || "Failed to create playlist");
       }
+
+      await fetch(`https://api.spotify.com/v1/playlists/${data.id}/tracks`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uris: selectedTracks.map((t) => t.uri),
+        }),
+      });
+
+      setMessage(`Playlist "${data.name}" created!`);
+      setTimeout(() => setMessage(""), 5000); // <-- clear message after 4s
+
+      setSelectedTracks([]);
+      setPlaylistName("");
+      setPlaylistDesc("");
+    } catch (err) {
+      console.error(err);
+      setMessage("Failed to create playlist");
+      setTimeout(() => setMessage(""), 5000);
+    }
   };
 
   return (
     <div className="py-8 space-y-10 max-w-8xl mx-auto text-white">
       <div className="flex flex-col lg:flex-row gap-6 mb-10">
         {/* Genre Selection */}
-        <div className="flex-1 p-4 bg-zinc-900 rounded-xl border border-white/10">
+        {/* <div className="flex-1 p-4 bg-zinc-900 rounded-xl border border-white/10">
           <h2 className="text-lg font-bold text-white mb-4">Select Genres</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {GENRES.map((g) => {
@@ -196,7 +224,7 @@ export default function SearchWithPlaylist({
               );
             })}
           </div>
-        </div>
+        </div> */}
 
         {/* Playlist Builder */}
         {selectedTracks && (
@@ -239,11 +267,11 @@ export default function SearchWithPlaylist({
             />
 
             <button
-                            onClick={createPlaylist}
-                            className="bg-green-500 hover:bg-green-600 cursor-pointer px-4 py-2 rounded-md text-white font-semibold"
-                        >
-                            Create Playlist
-                        </button>
+              onClick={createPlaylist}
+              className="bg-green-500 hover:bg-green-600 cursor-pointer px-4 py-2 rounded-md text-white font-semibold"
+            >
+              Create Playlist
+            </button>
           </div>
         )}
         {message && (
@@ -254,7 +282,6 @@ export default function SearchWithPlaylist({
       </div>
 
       {/* Track Cards Always Visible */}
-      {error && <p className="text-red-400">{error}</p>}
       {loading && <p className="text-gray-300">Loading...</p>}
 
       {!loading && !error && tracks.length > 0 && (

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
+import useSpotifyLogout from "@/lib/useSpotifyLogout";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 interface SpotifyTopTracksResponse {
@@ -32,6 +33,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
 
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const logout = useSpotifyLogout();
 
   useEffect(() => {
     const fetchTopTracks = async () => {
@@ -45,9 +47,22 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
           }
         );
 
-        if (!res.ok) throw new Error("Failed to fetch top tracks");
+        const data: SpotifyTopTracksResponse & {
+          error?: { message?: string };
+        } = await res.json();
 
-        const data: SpotifyTopTracksResponse = await res.json();
+        if (!res.ok) {
+          const msg = data.error?.message || "";
+          if (
+            msg.toLowerCase().includes("token") ||
+            msg.toLowerCase().includes("expired") ||
+            res.status === 401
+          ) {
+            logout();
+            return;
+          }
+          throw new Error(msg || "Failed to fetch top tracks");
+        }
         setTracks(data.items);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
@@ -111,7 +126,6 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
               <div
                 key={track.id}
                 className="w-64 min-w-[16rem] p-4 bg-white/10 backdrop-blur-none border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
-
               >
                 <Image
                   src={track.album.images[0]?.url}

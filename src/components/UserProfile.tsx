@@ -7,17 +7,14 @@ interface Props {
   displayName: string;
   country: string;
   product: string;
-  onLogout: () => void;
-  accessToken: string
+  accessToken: string;
 }
 
 export default function UserProfile({
   displayName,
   country,
   product,
-  onLogout,
 }: Props) {
-
   const token = localStorage.getItem('spotify_access_token') || '';
 
   return (
@@ -30,12 +27,15 @@ export default function UserProfile({
           Create Playlist
         </a>
       </nav>
+
       <h1 className="text-7xl font-bold tracking-wider uppercase mb-1">
         Welcome, {displayName}
       </h1>
       <p className="text-white/70 text-sm uppercase">{product}</p>
       <p className="text-white/70 text-sm uppercase">country: {country}</p>
-      <LogoutButton onLogout={onLogout} />
+
+      {/* Self-contained logout button */}
+      <LogoutButton />
 
       {/* PlayerBar */}
       <PlayerBar accessToken={token} />
