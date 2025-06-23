@@ -78,6 +78,7 @@ export default function SearchWithPlaylist({
       });
 
       const data = await res.json();
+      console.log("data",data)
 
       if (!res.ok) {
         const msg = data.error?.message || "";
@@ -298,6 +299,7 @@ export default function SearchWithPlaylist({
                 height={300}
                 className="rounded-lg w-full h-36 object-cover mb-2"
               />
+               
               <div className="font-semibold text-sm truncate">{track.name}</div>
               <div className="text-xs text-white/60 truncate">
                 {track.artists.map((a) => a.name).join(", ")}
