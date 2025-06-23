@@ -125,7 +125,7 @@ export default function TopArtistHighlight({ token }: { token: string }) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full flex items-center justify-center  aspect-square rounded-full overflow-hidden will-change-transform shadow-[0_0_60px_rgba(255,255,255,0.2)]"
+      className="relative w-full flex items-center justify-center aspect-square rounded-full overflow-hidden will-change-transform shadow-[0_0_60px_rgba(255,255,255,0.2)]"
     >
       {/* Background wrapper that rotates */}
       <div
@@ -139,7 +139,7 @@ export default function TopArtistHighlight({ token }: { token: string }) {
       />
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/10  z-0" />
+      <div className="absolute inset-0 bg-black/20  z-0" />
 
       {/* Content */}
       <div className="relative z-10 text-center px-6">

@@ -30,7 +30,7 @@ export default function UserProfile({
           Create Playlist
         </a>
       </nav>
-      <h1 className="text-6xl font-extrabold tracking-tight uppercase mb-1">
+      <h1 className="text-7xl font-bold tracking-wider uppercase mb-1">
         Welcome, {displayName}
       </h1>
       <p className="text-white/70 text-sm uppercase">{product}</p>

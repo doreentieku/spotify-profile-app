@@ -37,7 +37,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
     const fetchTopTracks = async () => {
       try {
         const res = await fetch(
-          `https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=${timeRange}`,
+          `https://api.spotify.com/v1/me/top/tracks?limit=25&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

@@ -6,7 +6,6 @@ import { gsap } from "gsap";
 import { FaSpotify } from "react-icons/fa";
 import Image from "next/image";
 
-
 const generateRandomString = (length: number) => {
   const possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -27,9 +26,11 @@ const sha256 = async (plain: string) => {
 
 export default function LoginPage() {
   const router = useRouter();
-  const leftRef = useRef(null);
-  const rightRef = useRef(null);
-
+  const topRef = useRef(null);
+  const bottomRef = useRef(null);
+  const backgroundRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+const backgroundImage = '/headphone.jpg'
   useEffect(() => {
     const url = new URL(window.location.href);
     const code = url.searchParams.get("code");
@@ -71,17 +72,50 @@ export default function LoginPage() {
   useEffect(() => {
     const tl = gsap.timeline();
     tl.fromTo(
-      leftRef.current,
-      { x: -200, opacity: 0 },
-      { x: 0, opacity: 1, duration: 1, ease: "power3.out" }
+      topRef.current,
+      { y: -800, opacity: 0 },
+      { y: 0, opacity: 0.4, duration: 3, ease: "power3.out" }
     );
+
     tl.fromTo(
-      rightRef.current,
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
+      bottomRef.current,
+      { y: 410, opacity: 0 },
+      { y: 0, opacity: 1, duration: 3, ease: "power3.out" },
       "<0.2"
     );
   }, []);
+
+  useEffect(() => {
+    gsap.fromTo(
+      containerRef.current,
+      { opacity: 0, scale: 1 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 1.6,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 50%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
+
+    // Scroll-based background rotation
+    if (backgroundRef.current) {
+      gsap.to(backgroundRef.current, {
+        rotate: 620,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 3,
+        },
+      });
+    }
+  });
 
   // Manual login trigger
   const loginWithSpotify = async () => {
@@ -105,7 +139,6 @@ export default function LoginPage() {
       "user-read-recently-played",
     ].join(" ");
 
-
     const params = new URLSearchParams({
       response_type: "code",
       client_id: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!,
@@ -120,55 +153,64 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative flex flex-grow h-screen text-white overflow-hidden">
-      {/* Background Video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover blur-[5px] z-0"
-      >
-        <source src="/video.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <main className="relative flex flex-grow h-screen overflow-hidden">
+      {/* <div
+        ref={backgroundRef}
+        className="absolute inset-0 will-change-transform rounded-full"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      /> */}
 
-      {/* <Image src={"/window.png"} alt={""} width={200} height={300} className="absolute inset-0 w-full h-full object-cover blur-none z-0"></Image> */}
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/70 z-0" />
-
-      {/* Content Container */}
-      <div className="relative z-10 w-full flex items-center justify-between px-10 lg:px-24">
-        {/* Left Side Title */}
-        <div ref={leftRef} className="w-1/2">
-          <h1 className="text-[18vw] font-extrabold tracking-tighter leading-none select-none">
-            spot
-            <br />
-            icizr
+      {/* 🔹 Foreground Content */}
+      <div className="relative z-10 w-full h-screen flex flex-col items-center justify-center px-10 lg:px-24 py-10 space-y-6">
+        <div ref={topRef} className="text-center space-y-2">
+          <div className="text-white text-lg">
+            Unleash the full potential of your music data.
+          </div>
+          <h1 className="text-[21vw] font-extrabold bg-white/50 backdrop-blur-lg tracking-wider text-center bg-clip-text text-transparent">
+            spoticizr.
           </h1>
         </div>
 
-        {/* Right Side Content */}
-        <div
-          ref={rightRef}
-          className="w-1/2 flex flex-col items-start space-y-8 max-w-xl"
+        <button
+          ref={bottomRef}
+          onClick={loginWithSpotify}
+          className="flex items-center gap-2 bg-green-500/20 hover:bg-green-700/20 backdrop-blur-md rounded-lg px-6 py-3 text-white font-bold cursor-pointer"
         >
-          <p className="text-sm md:text-xl lg:text-xl text-gray-200">
-            Dive deep into your listening habits with a custom, high-resolution
-            dashboard built just for you. Unleash the full potential of your
-            music data.
-          </p>
+          <FaSpotify />
+          <span>Login with Spotify</span>
+        </button>
+      </div>
 
-          <button
-            onClick={loginWithSpotify}
-            className="bg-green-500/20 hover:bg-green-600/50 backdrop-blur-md rounded-lg px-5 py-3 font-bold inline-flex items-center space-x-3 text-xl md:text-2xl cursor-pointer"
+           {/* Animated SVG overlay */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <circle
+            cx="20"
+            cy="20"
+            r="40"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            opacity="0.08"
           >
-            <FaSpotify />
-            <span>Login with Spotify</span>
-          </button>
-
-        </div>
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 50 50"
+              to="360 50 50"
+              dur="30s"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </svg>
       </div>
     </main>
   );

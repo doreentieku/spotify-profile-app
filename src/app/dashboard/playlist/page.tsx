@@ -44,7 +44,7 @@ export default function AIPlaylistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white pb-24">
+    <div className="w-full bg-gradient-to-br from-black via-zinc-900 to-black text-white pb-24">
       {/* Header */}
       <header className="flex justify-between items-center px-6 py-4 text-sm">
         <UserProfile
@@ -61,7 +61,7 @@ export default function AIPlaylistPage() {
         />
       </header>
 
-      <section className="space-y-10 px-6">
+      <section className="space-y-100 px-6">
         <SearchWithPlaylist accessToken={token} deviceId={deviceId} />
       </section>
     </div>

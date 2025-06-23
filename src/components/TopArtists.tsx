@@ -33,7 +33,7 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
     const fetchTopArtists = async () => {
       try {
         const res = await fetch(
-          `https://api.spotify.com/v1/me/top/artists?limit=10&time_range=${timeRange}`,
+          `https://api.spotify.com/v1/me/top/artists?limit=25&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

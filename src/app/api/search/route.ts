@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const genre = url.searchParams.get("genre") || "pop";
 
   const res = await fetch(
-    `https://api.spotify.com/v1/search?q=${encodeURIComponent(genre)}&type=track&limit=25`,
+    `https://api.spotify.com/v1/search?q=${encodeURIComponent(genre)}&type=track&limit=23`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
