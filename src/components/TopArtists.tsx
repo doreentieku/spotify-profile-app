@@ -155,7 +155,6 @@ export default function TopArtists({ accessToken,deviceId }: TopArtistsProps) {
     setSelectedAlbum(album);
     fetchAlbumTracks(album.id);
   };
-        console.log("albumTracks",albumTracks)
 
   return (
     <div className="max-w-8xl mx-auto">
@@ -283,7 +282,7 @@ export default function TopArtists({ accessToken,deviceId }: TopArtistsProps) {
                       alt={album.name}
                       width={300}
                       height={300}
-                      className="w-full h-40 object-cover rounded"
+                      className="w-full h-40 object-cover rounded cursor-pointer"
                     />
                     <div className="text-sm font-medium mt-2 truncate">
                       {album.name}
