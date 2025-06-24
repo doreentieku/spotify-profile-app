@@ -31,6 +31,10 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
   const [error, setError] = useState<string | null>(null);
   const logout = useSpotifyLogout();
 
+  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  const [artistAlbums, setArtistAlbums] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
     const fetchTopArtists = async () => {
       try {
@@ -86,10 +90,37 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
     });
   };
 
+  const fetchArtistAlbums = async (artistId: string) => {
+    try {
+      const res = await fetch(
+        `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single&limit=20`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to fetch artist albums");
+
+      const data = await res.json();
+      setArtistAlbums(data.items);
+      setIsModalOpen(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const handleArtistClick = (artist: Artist) => {
+    setSelectedArtist(artist);
+    fetchArtistAlbums(artist.id);
+  };
+
   return (
     <div className="max-w-8xl mx-auto">
       <div className="flex justify-between items-center mb-4 px-4">
         <h2 className="text-lg font-bold text-white pl-5">Top Artists</h2>
+        <p>Click to view artist albums</p>
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value as TimeRange)}
@@ -122,7 +153,8 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
             {artists.map((artist) => (
               <div
                 key={artist.id}
-                className="w-60 min-w-[15rem] p-4 bg-white/10 backdrop-blur-none border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
+                onClick={() => handleArtistClick(artist)}
+                className="cursor-pointer w-60 min-w-[15rem] p-4 bg-white/10 backdrop-blur-none border border-white/20 rounded-xl shadow-md text-white hover:bg-white/20 transition"
               >
                 <Image
                   src={artist.images[0]?.url}
@@ -175,6 +207,57 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
         >
           <ArrowRight size={20} />
         </button>
+        {isModalOpen && selectedArtist && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
+            <div className="bg-zinc-900 p-6 rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold">
+                  Albums by {selectedArtist.name}
+                </h3>
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setSelectedArtist(null);
+                    setArtistAlbums([]);
+                  }}
+                  className="text-red-400 hover:text-red-600 text-lg"
+                >
+                  ✖
+                </button>
+              </div>
+
+              {artistAlbums.length === 0 && (
+                <p className="text-gray-400">No albums found.</p>
+              )}
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {artistAlbums.map((album) => (
+                  <a
+                    key={album.id}
+                    href={album.external_urls.spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block bg-white/10 rounded-md p-2 hover:bg-white/20 transition"
+                  >
+                    <Image
+                      src={album.images[0]?.url}
+                      alt={album.name}
+                      width={300}
+                      height={300}
+                      className="w-full h-40 object-cover rounded"
+                    />
+                    <div className="text-sm font-medium mt-2 truncate">
+                      {album.name}
+                    </div>
+                    <div className="text-xs text-white/60 truncate">
+                      {album.release_date}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

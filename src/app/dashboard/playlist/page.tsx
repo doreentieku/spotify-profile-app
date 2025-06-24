@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import UserProfile from "@/components/UserProfile";
 import { initializeSpotifyPlayer } from "@/lib/spotifyPlayer";
-import SearchWithPlaylist from '@/components/SearchWithPlaylist';
+import SearchWithPlaylist from "@/components/SearchWithPlaylist";
 
 interface SpotifyProfile {
   display_name: string;
@@ -16,9 +16,8 @@ export default function AIPlaylistPage() {
   const [token, setToken] = useState<string | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
 
-
   useEffect(() => {
-    const token = localStorage.getItem('spotify_access_token');
+    const token = localStorage.getItem("spotify_access_token");
     setToken(token);
     if (!token) return;
 
@@ -29,7 +28,6 @@ export default function AIPlaylistPage() {
       .then(setProfile)
       .catch(() => setProfile(null));
   }, []);
-
 
   useEffect(() => {
     if (token) initializeSpotifyPlayer(token, setDeviceId);
@@ -51,13 +49,7 @@ export default function AIPlaylistPage() {
           displayName={profile.display_name}
           country={profile.country}
           product={profile.product}
-          accessToken={token!}
-          onLogout={() => {
-            localStorage.removeItem("spotify_access_token");
-            localStorage.removeItem("spotify_code_verifier");
-            localStorage.removeItem("spotify_pkce_state");
-            window.location.href = "/login";
-          }}
+          accessToken={token}
         />
       </header>
 

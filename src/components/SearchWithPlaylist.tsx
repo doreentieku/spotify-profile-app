@@ -56,7 +56,6 @@ export default function SearchWithPlaylist({
 
   const logout = useSpotifyLogout();
 
-
   useEffect(() => {
     if (profile) {
     }

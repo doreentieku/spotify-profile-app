@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { initializeSpotifyPlayer } from "@/lib/spotifyPlayer";
-import MostActiveHour from "@/components/MostActiveHour";
+// import MostActiveHour from "@/components/MostActiveHour";
 import RecentlyPlayedTracks from "@/components/RecentlyPlayedTracks";
 import TopTracks from "@/components/TopTracks";
 import TopArtists from "@/components/TopArtists";
@@ -35,7 +35,9 @@ export default function DashboardPage() {
   if (!profile || !token)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black to-zinc-900 text-white">
-        <p className="text-xl animate-pulse">Loading your Spotify dashboard...</p>
+        <p className="text-xl animate-pulse">
+          Loading your Spotify dashboard...
+        </p>
       </div>
     );
 
@@ -48,12 +50,6 @@ export default function DashboardPage() {
           country={profile.country}
           product={profile.product}
           accessToken={token}
-          onLogout={() => {
-            localStorage.removeItem("spotify_access_token");
-            localStorage.removeItem("spotify_code_verifier");
-            localStorage.removeItem("spotify_pkce_state");
-            window.location.href = "/login";
-          }}
         />
       </header>
 

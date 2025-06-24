@@ -2,7 +2,7 @@
 
 import LogoutButton from './LogoutButton';
 import PlayerBar from "@/components/PlayerBar";
-
+  
 interface Props {
   displayName: string;
   country: string;
@@ -23,8 +23,14 @@ export default function UserProfile({
         <a href="/dashboard" className="text-gray-400 hover:text-white">
           Home
         </a>
+          <a href="/dashboard/view-library" className="text-gray-400 hover:text-white">
+         View Library
+        </a>
         <a href="/dashboard/playlist" className="text-gray-400 hover:text-white">
           Create Playlist
+        </a>
+         <a href="/dashboard/new-releases" className="text-gray-400 hover:text-white">
+          New Releases
         </a>
       </nav>
 

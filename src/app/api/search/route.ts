@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
   const encodedQuery = encodeURIComponent(query);
 
   const res = await fetch(
-    // `https://api.spotify.com/v1/search?q=${encodeURIComponent(genre)}&type=track&limit=23`,
     `https://api.spotify.com/v1/search?q=${encodedQuery}&type=track,artist,playlist&limit=20`,
     {
       headers: {
