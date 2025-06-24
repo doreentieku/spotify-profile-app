@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
+import PlayButton from "@/components/PlayButton";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
 interface TopArtistsProps {
   accessToken: string;
+  deviceId: string | null;
 }
 
 interface SpotifyTopArtistsResponse {
@@ -24,7 +26,15 @@ interface Artist {
   external_urls: { spotify: string };
 }
 
-export default function TopArtists({ accessToken }: TopArtistsProps) {
+interface Track {
+  id: string;
+  name: string;
+  duration_ms: number;
+  preview_url: string | null;
+  uri: string;
+}
+
+export default function TopArtists({ accessToken,deviceId }: TopArtistsProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
 
   const [artists, setArtists] = useState<Artist[]>([]);
@@ -34,6 +44,10 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [artistAlbums, setArtistAlbums] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedAlbum, setSelectedAlbum] = useState<any | null>(null);
+  const [albumTracks, setAlbumTracks] = useState<Track[]>([]);
+  const [isTracksModalOpen, setIsTracksModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchTopArtists = async () => {
@@ -115,6 +129,33 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
     setSelectedArtist(artist);
     fetchArtistAlbums(artist.id);
   };
+
+  const fetchAlbumTracks = async (albumId: string) => {
+    try {
+      const res = await fetch(
+        `https://api.spotify.com/v1/albums/${albumId}/tracks`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to fetch album tracks");
+
+      const data = await res.json();
+      setAlbumTracks(data.items);
+      setIsTracksModalOpen(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const handleAlbumClick = (album: any) => {
+    setSelectedAlbum(album);
+    fetchAlbumTracks(album.id);
+  };
+        console.log("albumTracks",albumTracks)
 
   return (
     <div className="max-w-8xl mx-auto">
@@ -232,12 +273,10 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {artistAlbums.map((album) => (
-                  <a
+                  <button
                     key={album.id}
-                    href={album.external_urls.spotify}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block bg-white/10 rounded-md p-2 hover:bg-white/20 transition"
+                    onClick={() => handleAlbumClick(album)}
+                    className="block bg-white/10 rounded-md p-2 hover:bg-white/20 transition text-left"
                   >
                     <Image
                       src={album.images[0]?.url}
@@ -252,9 +291,55 @@ export default function TopArtists({ accessToken }: TopArtistsProps) {
                     <div className="text-xs text-white/60 truncate">
                       {album.release_date}
                     </div>
-                  </a>
+                  </button>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tracks Modal */}
+        {isTracksModalOpen && selectedAlbum && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
+            <div className="bg-zinc-900 p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold">
+                  Tracks in "{selectedAlbum.name}"
+                </h3>
+                <button
+                  onClick={() => {
+                    setIsTracksModalOpen(false);
+                    setSelectedAlbum(null);
+                    setAlbumTracks([]);
+                  }}
+                  className="text-red-400 hover:text-red-600 text-lg"
+                >
+                  ✖
+                </button>
+              </div>
+
+              {albumTracks.length === 0 && (
+                <p className="text-gray-400">No tracks found.</p>
+              )}
+
+              <ul className="space-y-2">
+                {albumTracks.map((track, idx) => (
+                  <li
+                    key={track.id}
+                    className="flex justify-between items-center bg-white/10 px-4 py-2 rounded"
+                  >
+                    <span>
+                      {idx + 1}. {track.name}
+                    </span>
+                    <PlayButton
+                      uri={track.uri}
+                      accessToken={accessToken}
+                      deviceId={deviceId}
+                    />
+                    
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         )}

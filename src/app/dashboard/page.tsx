@@ -63,7 +63,7 @@ export default function DashboardPage() {
 
       <section className="space-y-10 px-6 mx-auto">
         <TopTracks accessToken={token} deviceId={deviceId} />
-        <TopArtists accessToken={token} />
+        <TopArtists accessToken={token} deviceId={deviceId} />
         <TopGenres accessToken={token} />
       </section>
     </div>

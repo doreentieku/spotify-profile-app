@@ -32,6 +32,9 @@ export default function UserProfile({
          <a href="/dashboard/new-releases" className="text-gray-400 hover:text-white">
           New Releases
         </a>
+        <a href="/dashboard/related-artist" className="text-gray-400 hover:text-white">
+          View Related artists
+        </a>
       </nav>
 
       <h1 className="text-7xl font-bold tracking-wider uppercase mb-1">
