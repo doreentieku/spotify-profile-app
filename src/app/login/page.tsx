@@ -159,12 +159,12 @@ export default function LoginPage() {
   return (
     <main className="relative flex flex-grow h-screen overflow-hidden">
       {/* 🔹 Foreground Content */}
-      <div className="relative z-10 w-full h-screen flex flex-col items-center justify-center px-10 lg:px-24 py-10 space-y-6">
+      <div className="relative bg-gray-800 w-full h-screen flex flex-col items-center justify-center px-10 lg:px-24 py-10 space-y-6">
         <div ref={topRef} className="text-center space-y-2">
           <div className="text-white text-lg">
             Unleash the full potential of your music data.
           </div>
-          <h1 className="text-[21vw] font-extrabold bg-white/50 backdrop-blur-lg tracking-wider text-center bg-clip-text text-transparent">
+          <h1 className="text-[21vw] font-extrabold bg-slate-600 backdrop-blur-lg tracking-wider text-center bg-clip-text text-transparent">
             spoticizr.
           </h1>
         </div>
@@ -180,7 +180,7 @@ export default function LoginPage() {
       </div>
 
       {/* Animated SVG overlay */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-1">
         <svg
           className="w-full h-full"
           viewBox="0 0 100 100"
