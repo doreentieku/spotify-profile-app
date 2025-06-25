@@ -1,7 +1,6 @@
-// components/CreatePlaylist.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Track } from "@/types/spotify";
 
 interface SpotifyProfile {
@@ -13,23 +12,29 @@ interface Props {
   profile: SpotifyProfile | null;
   selectedTracks: Track[];
   setSelectedTracks: React.Dispatch<React.SetStateAction<Track[]>>;
+  playlistName: string;
   onSuccess?: (playlistName: string) => void;
 }
-
 
 export default function CreatePlaylist({
   accessToken,
   profile,
   selectedTracks,
   setSelectedTracks,
+  playlistName, // <-- passed from parent
   onSuccess,
 }: Props) {
-  const [playlistName, setPlaylistName] = useState("");
+  const [name, setName] = useState(playlistName); // local editable title
   const [playlistDesc, setPlaylistDesc] = useState("");
   const [message, setMessage] = useState("");
 
+  // Sync parent-provided playlist name when it changes
+  useEffect(() => {
+    setName(playlistName);
+  }, [playlistName]);
+
   const createPlaylist = async () => {
-    if (!playlistName || !profile || selectedTracks.length === 0) return;
+    if (!name || !profile || selectedTracks.length === 0) return;
 
     try {
       const res = await fetch(
@@ -41,7 +46,7 @@ export default function CreatePlaylist({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: playlistName,
+            name,
             description: playlistDesc,
             public: false,
           }),
@@ -49,7 +54,6 @@ export default function CreatePlaylist({
       );
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error?.message || "Playlist creation failed");
 
       await fetch(`https://api.spotify.com/v1/playlists/${data.id}/tracks`, {
@@ -66,7 +70,7 @@ export default function CreatePlaylist({
       setMessage(`Playlist "${data.name}" created!`);
       setTimeout(() => setMessage(""), 5000);
       setSelectedTracks([]);
-      setPlaylistName("");
+      setName(""); // reset
       setPlaylistDesc("");
       onSuccess?.(data.name);
     } catch (err) {
@@ -82,8 +86,8 @@ export default function CreatePlaylist({
 
       <input
         type="text"
-        value={playlistName}
-        onChange={(e) => setPlaylistName(e.target.value)}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         placeholder="Playlist Name"
         className="w-full px-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md"
       />

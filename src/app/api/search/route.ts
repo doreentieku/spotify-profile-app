@@ -6,8 +6,15 @@ export async function GET(req: NextRequest) {
   const url = new URL(req.url);
 
   const genre = url.searchParams.get("genre") || "pop";
-  const query = 'track:"Blinding Lights" artist:"The Weeknd"';
-  const encodedQuery = encodeURIComponent(query);
+  const query = `${genre} tracks`;
+  // const query = `chill relaxing acoustic`;
+  // const query = `${genre} playlist`;
+
+  // const encodedQuery = encodeURIComponent(query);
+
+  const q = url.searchParams.get("q") || "pop tracks";
+
+  const encodedQuery = encodeURIComponent(q);
 
   const res = await fetch(
     `https://api.spotify.com/v1/search?q=${encodedQuery}&type=track,artist,playlist&limit=20`,

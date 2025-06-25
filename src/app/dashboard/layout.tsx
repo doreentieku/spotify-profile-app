@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const { token: accessToken, loading } = useSpotifyAuth(); 
+    const { token: accessToken, loading } = useSpotifyAuth();
     const router = useRouter();
 
     useEffect(() => {

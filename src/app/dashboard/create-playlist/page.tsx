@@ -7,13 +7,7 @@ import SearchWithPlaylist from "@/components/SearchWithPlaylist";
 import useSpotifyProfile from "@/lib/useSpotifyProfile";
 import useSpotifyToken from "@/hooks/useSpotifyToken";
 
-interface SpotifyProfile {
-  display_name: string;
-  country: string;
-  product: string;
-}
-
-export default function AIPlaylistPage() {
+export default function PlaylistPage() {
   const { token } = useSpotifyToken();
   const profile = useSpotifyProfile(token || "");
   const [deviceId, setDeviceId] = useState<string | null>(null);
