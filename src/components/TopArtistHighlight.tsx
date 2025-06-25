@@ -69,11 +69,11 @@ export default function TopArtistHighlight({ token }: { token: string }) {
 
     gsap.fromTo(
       containerRef.current,
-      { opacity: 0, scale: 1 },
+      { opacity: 1, scale: 0.8 },
       {
         opacity: 1,
         scale: 1,
-        duration: 1.6,
+        duration: 0.6,
         ease: "power3.out",
         scrollTrigger: {
           trigger: containerRef.current,
@@ -85,13 +85,13 @@ export default function TopArtistHighlight({ token }: { token: string }) {
 
     gsap.fromTo(
       titleRef.current,
-      { opacity: 0, letterSpacing: "1em", y: 50 },
+      { opacity: 0, letterSpacing: "0.5em", y: 50 },
       {
         opacity: 1,
-        letterSpacing: "0.2em",
+        letterSpacing: "0.5em",
         y: 0,
         duration: 1.2,
-        delay: 0.3,
+        delay: 1,
         ease: "power2.out",
       }
     );
@@ -105,7 +105,7 @@ export default function TopArtistHighlight({ token }: { token: string }) {
           trigger: containerRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 3,
+          scrub: 4,
         },
       });
     }
