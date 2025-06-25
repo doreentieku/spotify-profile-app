@@ -30,7 +30,6 @@ export default function LoginPage() {
   const bottomRef = useRef(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-const backgroundImage = '/headphone.jpg'
   useEffect(() => {
     const url = new URL(window.location.href);
     const code = url.searchParams.get("code");
@@ -49,9 +48,13 @@ const backgroundImage = '/headphone.jpg'
         });
 
         if (!res.ok) throw new Error(await res.text());
-        const { access_token } = await res.json();
+        const { access_token, expires_in, refresh_token } = await res.json();
+        const expiresAt = Date.now() + expires_in * 1000;
 
         localStorage.setItem("spotify_access_token", access_token);
+        localStorage.setItem("spotify_refresh_token", refresh_token);
+        localStorage.setItem("spotify_expires_at", expiresAt.toString());
+
         localStorage.removeItem("spotify_code_verifier");
         localStorage.removeItem("spotify_pkce_state");
 
@@ -154,16 +157,6 @@ const backgroundImage = '/headphone.jpg'
 
   return (
     <main className="relative flex flex-grow h-screen overflow-hidden">
-      {/* <div
-        ref={backgroundRef}
-        className="absolute inset-0 will-change-transform rounded-full"
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      /> */}
-
       {/* 🔹 Foreground Content */}
       <div className="relative z-10 w-full h-screen flex flex-col items-center justify-center px-10 lg:px-24 py-10 space-y-6">
         <div ref={topRef} className="text-center space-y-2">
@@ -185,7 +178,7 @@ const backgroundImage = '/headphone.jpg'
         </button>
       </div>
 
-           {/* Animated SVG overlay */}
+      {/* Animated SVG overlay */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
         <svg
           className="w-full h-full"

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import UserProfile from "@/components/UserProfile";
 import { initializeSpotifyPlayer } from "@/lib/spotifyPlayer";
 import SearchWithPlaylist from "@/components/SearchWithPlaylist";
+import useSpotifyProfile from "@/lib/useSpotifyProfile";
+import useSpotifyToken from "@/hooks/useSpotifyToken";
 
 interface SpotifyProfile {
   display_name: string;
@@ -12,22 +14,9 @@ interface SpotifyProfile {
 }
 
 export default function AIPlaylistPage() {
-  const [profile, setProfile] = useState<SpotifyProfile | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const { token } = useSpotifyToken();
+  const profile = useSpotifyProfile(token || "");
   const [deviceId, setDeviceId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("spotify_access_token");
-    setToken(token);
-    if (!token) return;
-
-    fetch("https://api.spotify.com/v1/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then(setProfile)
-      .catch(() => setProfile(null));
-  }, []);
 
   useEffect(() => {
     if (token) initializeSpotifyPlayer(token, setDeviceId);

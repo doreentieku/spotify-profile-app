@@ -5,27 +5,14 @@ import { initializeSpotifyPlayer } from "@/lib/spotifyPlayer";
 import UserProfile from "@/components/UserProfile";
 import useSpotifyProfile from "@/lib/useSpotifyProfile";
 import NewReleases from "@/components/NewReleases";
+import useSpotifyToken from "@/hooks/useSpotifyToken";
+
 
 export default function DashboardPage() {
-  const [token, setToken] = useState<string | null>(null);
-  const [deviceId, setDeviceId] = useState<string | null>(null);
-
-  // Load token from localStorage
-  useEffect(() => {
-    const storedToken = localStorage.getItem("spotify_access_token");
-    if (!storedToken) return;
-    setToken(storedToken);
-  }, []);
+  const { token } = useSpotifyToken();
 
   // Get user profile using the token
   const profile = useSpotifyProfile(token || "");
-
-  // Initialize player once token is set
-  useEffect(() => {
-    if (token) {
-      initializeSpotifyPlayer(token, setDeviceId);
-    }
-  }, [token]);
 
   if (!profile || !token)
     return (
