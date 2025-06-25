@@ -20,13 +20,7 @@ const GENRES = [
 ];
 
 const SEARCH_TYPES = [
-  "tracks", "playlist", "acoustic", "relaxing", "top hits", "live"
-];
-
-const TIME_RANGES = [
-  { label: "Last 4 Weeks", value: "short_term" },
-  { label: "Last 6 Months", value: "medium_term" },
-  { label: "All Time", value: "long_term" },
+  "tracks", "albums", "artists", "shows", "playlists", "episodes", "acoustic", "relaxing", "top hits", "live"
 ];
 
 
@@ -43,7 +37,6 @@ export default function SearchWithPlaylist({
   const [message, setMessage] = useState("");
   const profile = useSpotifyProfile(accessToken);
   const [selectedGenres, setSelectedGenres] = useState<string[]>(["chill"]);
-  const [timeRange, setTimeRange] = useState("short_term");
 
   // Toggle genre multi-select
   const toggleGenre = (genre: string) => {
@@ -122,150 +115,162 @@ export default function SearchWithPlaylist({
     }
   };
 
+  const addAllToPlaylist = () => {
+    const newTracks = tracks.filter(
+      (track) => !selectedTracks.some((t) => t.id === track.id)
+    );
+    setSelectedTracks((prev) => [...prev, ...newTracks]);
+  };
+
+
   const removeFromPlaylist = (id: string) => {
     setSelectedTracks((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
     <div className="py-8 space-y-10 max-w-8xl mx-auto text-white">
-      <div>
-        {/* Genres multi-select */}
-        <div className="flex flex-wrap gap-3 mb-4">
-          {GENRES.map((genre) => {
-            const isSelected = selectedGenres.includes(genre);
-            return (
-              <button
-                key={genre}
-                onClick={() => toggleGenre(genre)}
-                className={`px-3 py-1 rounded-full text-sm border transition
+      {/* Genres multi-select */}
+      <div className="flex flex-wrap gap-3 mb-4">
+        {GENRES.map((genre) => {
+          const isSelected = selectedGenres.includes(genre);
+          return (
+            <button
+              key={genre}
+              onClick={() => toggleGenre(genre)}
+              className={`px-3 py-1 rounded-full text-sm border transition
                 ${isSelected
-                    ? "bg-green-600 text-white"
-                    : "bg-zinc-800 text-gray-300"
-                  }
+                  ? "bg-green-600 text-white"
+                  : "bg-zinc-800 text-gray-300"
+                }
                 hover:bg-green-700`}
-              >
-                {genre}
-              </button>
-            );
-          })}
-        </div>
+            >
+              {genre}
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Search types multi-select */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          {SEARCH_TYPES.map((type) => {
-            const isSelected = selectedTypes.includes(type);
-            return (
-              <button
-                key={type}
-                onClick={() => toggleType(type)}
-                className={`px-3 py-1 rounded-full text-sm border transition
+      {/* Search types multi-select */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        {SEARCH_TYPES.map((type) => {
+          const isSelected = selectedTypes.includes(type);
+          return (
+            <button
+              key={type}
+              onClick={() => toggleType(type)}
+              className={`px-3 py-1 rounded-full text-sm border transition
                 ${isSelected
-                    ? "bg-green-600 text-white"
-                    : "bg-zinc-800 text-gray-300"
-                  }
+                  ? "bg-green-600 text-white"
+                  : "bg-zinc-800 text-gray-300"
+                }
                 hover:bg-green-700`}
-              >
-                {type}
-              </button>
-            );
-          })}
+            >
+              {type}
+            </button>
+          );
+        })}
+      </div>
+
+      {tracks.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={addAllToPlaylist}
+            className="px-4 py-2 text-sm font-semibold rounded-full bg-green-700 hover:bg-green-800 text-white transition shadow"
+          >
+            + Add All to Playlist
+          </button>
         </div>
+      )}
 
-        {/* Playlist Name */}
-        <div className="mb-6 text-white font-semibold text-lg">
-          {playlistName}
-        </div>
+      <div className="flex flex-col lg:flex-row gap-6 mb-10">
+        {/* Playlist Builder */}
+        {selectedTracks.length > 0 && (
+          <div className="flex-1 space-y-6">
+            <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4">
+              <h3 className="text-xl font-bold">Selected Tracks</h3>
 
-        <div className="flex flex-col lg:flex-row gap-6 mb-10">
-          {/* Playlist Builder */}
-          {selectedTracks.length > 0 && (
-            <div className="flex-1 space-y-6">
-              <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4">
-                <h3 className="text-xl font-bold">Selected Tracks</h3>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {selectedTracks.map((track) => (
-                    <div
-                      key={track.id}
-                      className="bg-black/40 p-3 rounded-lg text-sm text-white flex flex-col gap-1"
-                    >
-                      <div className="truncate font-semibold">{track.name}</div>
-                      <div className="text-xs text-white/60 truncate">
-                        {track.artists.map((a) => a.name).join(", ")}
-                      </div>
-                      <button
-                        onClick={() => removeFromPlaylist(track.id)}
-                        className="text-red-400 text-xs underline mt-1 cursor-pointer"
-                      >
-                        ❌ Remove
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <CreatePlaylist
-                accessToken={accessToken}
-                profile={profile}
-                selectedTracks={selectedTracks}
-                setSelectedTracks={setSelectedTracks}
-                playlistName={playlistName}
-                onSuccess={() => {
-                  setMessage(`Playlist "${playlistName}" created!`);
-                  setTimeout(() => setMessage(""), 5000);
-                }}
-              />
-            </div>
-          )}
-
-          {message && (
-            <div className="fixed top-28 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-white text-center bg-black/70 rounded-md border border-white/10 z-50">
-              {message}
-            </div>
-          )}
-        </div>
-
-        {/* Track Cards */}
-        {loading && <p className="text-gray-300">Loading...</p>}
-
-        {!loading && !error && tracks.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {tracks.map((track) => (
-              <div
-                key={track.id}
-                className="bg-white/10 p-3 rounded-xl hover:bg-white/20 transition shadow"
-              >
-                <Image
-                  src={track.album.images[0]?.url}
-                  alt={track.name}
-                  width={300}
-                  height={300}
-                  className="rounded-lg w-full h-36 object-cover mb-2"
-                />
-                <div className="font-semibold text-sm truncate">{track.name}</div>
-                <div className="text-xs text-white/60 truncate">
-                  {track.artists.map((a) => a.name).join(", ")}
-                </div>
-
-                <div className="flex gap-4 mt-2">
-                  <PlayButton
-                    uri={track.uri}
-                    accessToken={accessToken}
-                    deviceId={deviceId}
-                  />
-                  <button
-                    onClick={() => addToPlaylist(track)}
-                    className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full bg-green-500/20 hover:bg-green-800/80 transition duration-200 shadow-lg cursor-pointer"
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {selectedTracks.map((track) => (
+                  <div
+                    key={track.id}
+                    className="bg-black/40 p-3 rounded-lg text-sm text-white flex flex-col gap-1"
                   >
-                    <IoIosAddCircleOutline />
-                  </button>
-                </div>
+                    <div className="truncate font-semibold">{track.name}</div>
+                    <div className="text-xs text-white/60 truncate">
+                      {track.artists.map((a) => a.name).join(", ")}
+                    </div>
+                    <button
+                      onClick={() => removeFromPlaylist(track.id)}
+                      className="text-red-400 text-xs underline mt-1 cursor-pointer"
+                    >
+                      ❌ Remove
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <CreatePlaylist
+              accessToken={accessToken}
+              profile={profile}
+              selectedTracks={selectedTracks}
+              setSelectedTracks={setSelectedTracks}
+              playlistName={playlistName}
+              onSuccess={() => {
+                setMessage(`Playlist "${playlistName}" created!`);
+                setTimeout(() => setMessage(""), 5000);
+              }}
+            />
           </div>
         )}
 
-        {error && <p className="text-red-400">{error}</p>}
+        {message && (
+          <div className="fixed top-28 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-white text-center bg-black/70 rounded-md border border-white/10 z-50">
+            {message}
+          </div>
+        )}
       </div>
+
+      {/* Track Cards */}
+      {loading && <p className="text-gray-300">Loading...</p>}
+
+      {!loading && !error && tracks.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {tracks.map((track) => (
+            <div
+              key={track.id}
+              className="bg-white/10 p-3 rounded-xl hover:bg-white/20 transition shadow"
+            >
+              <Image
+                src={track.album.images[0]?.url}
+                alt={track.name}
+                width={300}
+                height={300}
+                className="rounded-lg w-full h-36 object-cover mb-2"
+              />
+              <div className="font-semibold text-sm truncate">{track.name}</div>
+              <div className="text-xs text-white/60 truncate">
+                {track.artists.map((a) => a.name).join(", ")}
+              </div>
+
+              <div className="flex gap-4 mt-2">
+                <PlayButton
+                  uri={track.uri}
+                  accessToken={accessToken}
+                  deviceId={deviceId}
+                />
+                <button
+                  onClick={() => addToPlaylist(track)}
+                  className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full bg-green-500/20 hover:bg-green-800/80 transition duration-200 shadow-lg cursor-pointer"
+                >
+                  <IoIosAddCircleOutline />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {error && <p className="text-red-400">{error}</p>}
     </div>
   );
 }

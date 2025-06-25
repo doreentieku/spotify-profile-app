@@ -10,9 +10,8 @@ export async function GET(req: NextRequest) {
   // const query = `chill relaxing acoustic`;
   // const query = `${genre} playlist`;
 
-  // const encodedQuery = encodeURIComponent(query);
-
   const q = url.searchParams.get("q") || "pop tracks";
+  console.log("query", q)
 
   const encodedQuery = encodeURIComponent(q);
 
