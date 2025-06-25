@@ -29,14 +29,19 @@ export default function SearchWithPlaylist({
   deviceId,
 }: SearchProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(["tracks"]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([
+    SEARCH_TYPES[Math.floor(Math.random() * SEARCH_TYPES.length)],
+  ]);
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [playlistName, setPlaylistName] = useState("");
   const [message, setMessage] = useState("");
   const profile = useSpotifyProfile(accessToken);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>(["chill"]);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([
+    GENRES[Math.floor(Math.random() * GENRES.length)],
+  ]);
+
 
   // Toggle genre multi-select
   const toggleGenre = (genre: string) => {

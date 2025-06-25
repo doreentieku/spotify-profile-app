@@ -135,6 +135,7 @@ export default function LoginPage() {
       "user-top-read",
       "playlist-read-private",
       "playlist-modify-private",
+      "playlist-modify-public",
       "streaming",
       "user-modify-playback-state",
       "user-read-playback-state",

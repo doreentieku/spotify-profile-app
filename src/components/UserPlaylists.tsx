@@ -56,6 +56,28 @@ export default function UserPlaylists({
     }
   }, [accessToken]);
 
+  const deletePlaylist = async (playlistId: string) => {
+    try {
+      const res = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete playlist");
+      }
+
+      // Filter it out of the list
+      setPlaylists((prev) => prev.filter((p) => p.id !== playlistId));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+
   return (
     <div className="py-8 space-y-6 max-w-6xl mx-auto text-white">
       <h2 className="text-2xl font-bold">Your Playlists</h2>
@@ -67,28 +89,36 @@ export default function UserPlaylists({
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {playlists.map((playlist) => (
-          <a
+          <div
             key={playlist.id}
-            href={playlist.external_urls.spotify}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-white/10 hover:bg-white/20 transition p-4 rounded-lg shadow"
+            className="relative bg-white/10 hover:bg-white/20 transition p-4 rounded-lg shadow"
           >
-            <Image
-              src={playlist.images?.[0]?.url || "/placeholder.jpg"}
-              alt={playlist.name}
-              width={300}
-              height={300}
-              className="w-full h-40 object-cover rounded-md mb-2"
-            />
+            <a
+              href={playlist.external_urls.spotify}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <Image
+                src={playlist.images?.[0]?.url || "/placeholder.jpg"}
+                alt={playlist.name}
+                width={300}
+                height={300}
+                className="w-full h-40 object-cover rounded-md mb-2"
+              />
+              <div className="font-semibold text-sm truncate">{playlist.name}</div>
+              <div className="text-xs text-white/60">{playlist.tracks.total} tracks</div>
+            </a>
 
-            <div className="font-semibold text-sm truncate">
-              {playlist.name}
-            </div>
-            <div className="text-xs text-white/60">
-              {playlist.tracks.total} tracks
-            </div>
-          </a>
+            <button
+              onClick={() => deletePlaylist(playlist.id)}
+              className="absolute top-2 right-2 text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded cursor-pointer"
+              title="Delete Playlist"
+            >
+              Delete
+            </button>
+          </div>
+
         ))}
       </div>
     </div>
