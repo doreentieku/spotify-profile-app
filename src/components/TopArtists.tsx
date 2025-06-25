@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
 import PlayButton from "@/components/PlayButton";
+import { Track } from "@/types/spotify";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -26,15 +27,7 @@ interface Artist {
   external_urls: { spotify: string };
 }
 
-interface Track {
-  id: string;
-  name: string;
-  duration_ms: number;
-  preview_url: string | null;
-  uri: string;
-}
-
-export default function TopArtists({ accessToken,deviceId }: TopArtistsProps) {
+export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
 
   const [artists, setArtists] = useState<Artist[]>([]);
@@ -335,7 +328,7 @@ export default function TopArtists({ accessToken,deviceId }: TopArtistsProps) {
                       accessToken={accessToken}
                       deviceId={deviceId}
                     />
-                    
+
                   </li>
                 ))}
               </ul>

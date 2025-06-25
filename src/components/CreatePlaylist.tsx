@@ -1,86 +1,110 @@
+// components/CreatePlaylist.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Track } from "@/types/spotify";
 
-interface CreatePlaylistProps {
-  accessToken: string;
+interface SpotifyProfile {
+  id: string;
 }
 
-export default function CreatePlaylist({ accessToken }: CreatePlaylistProps) {
+interface Props {
+  accessToken: string;
+  profile: SpotifyProfile | null;
+  selectedTracks: Track[];
+  setSelectedTracks: React.Dispatch<React.SetStateAction<Track[]>>;
+  onSuccess?: (playlistName: string) => void;
+}
+
+
+export default function CreatePlaylist({
+  accessToken,
+  profile,
+  selectedTracks,
+  setSelectedTracks,
+  onSuccess,
+}: Props) {
   const [playlistName, setPlaylistName] = useState("");
   const [playlistDesc, setPlaylistDesc] = useState("");
-  const [userId, setUserId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
-  // Get the current user's Spotify ID
-  useEffect(() => {
-    async function fetchUserProfile() {
-      const res = await fetch("https://api.spotify.com/v1/me", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      const data = await res.json();
-      setUserId(data.id);
-    }
-    if (accessToken) fetchUserProfile();
-  }, [accessToken]);
-
-  async function createPlaylist() {
-    if (!playlistName || !userId) return;
+  const createPlaylist = async () => {
+    if (!playlistName || !profile || selectedTracks.length === 0) return;
 
     try {
-      const res = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+      const res = await fetch(
+        `https://api.spotify.com/v1/users/${profile.id}/playlists`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: playlistName,
+            description: playlistDesc,
+            public: false,
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error?.message || "Playlist creation failed");
+
+      await fetch(`https://api.spotify.com/v1/playlists/${data.id}/tracks`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: playlistName,
-          description: playlistDesc,
-          public: false, // or true if you want it public
+          uris: selectedTracks.map((t) => t.uri),
         }),
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setMessage(`✅ Playlist "${data.name}" created!`);
-      } else {
-        setMessage(`❌ Failed to create playlist: ${data.error?.message}`);
-      }
+      setMessage(`Playlist "${data.name}" created!`);
+      setTimeout(() => setMessage(""), 5000);
+      setSelectedTracks([]);
+      setPlaylistName("");
+      setPlaylistDesc("");
+      onSuccess?.(data.name);
     } catch (err) {
-      console.error("Error creating playlist", err);
-      setMessage("❌ An error occurred");
+      console.error(err);
+      setMessage("Failed to create playlist");
+      setTimeout(() => setMessage(""), 5000);
     }
-  }
+  };
 
   return (
-    <div className="p-6 bg-black/50 text-white rounded-xl w-full max-w-lg mx-auto space-y-4">
-      <h2 className="text-xl font-semibold">Create a New Playlist</h2>
+    <div className="flex-1 p-4 bg-white/10 rounded-xl border border-white/10 space-y-4">
+      <h3 className="text-xl font-bold">Build Your Playlist</h3>
 
       <input
         type="text"
-        placeholder="Playlist Name"
         value={playlistName}
         onChange={(e) => setPlaylistName(e.target.value)}
-        className="w-full px-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md focus:outline-none"
+        placeholder="Playlist Name"
+        className="w-full px-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md"
       />
 
       <textarea
-        placeholder="Playlist Description"
         value={playlistDesc}
         onChange={(e) => setPlaylistDesc(e.target.value)}
-        className="w-full px-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md focus:outline-none"
+        placeholder="Playlist Description (Optional)"
+        className="w-full px-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md"
       />
 
       <button
         onClick={createPlaylist}
-        className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-md text-white font-semibold"
+        className="bg-green-500 hover:bg-green-600 cursor-pointer px-4 py-2 rounded-md text-white font-semibold"
       >
-        ➕ Create Playlist
+        Create Playlist
       </button>
 
-      {message && <p className="text-sm mt-2">{message}</p>}
+      {message && (
+        <div className="text-center text-sm text-white mt-2">{message}</div>
+      )}
     </div>
   );
 }

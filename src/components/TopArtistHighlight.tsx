@@ -156,6 +156,7 @@ export default function TopArtistHighlight({ token }: { token: string }) {
           {topArtist.genres.slice(0, 3).join(" • ")}
         </p>
 
+        <p>Global population</p>
         <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
           {/* Colored and Animated Popularity Bar */}
           <div
@@ -169,7 +170,7 @@ export default function TopArtistHighlight({ token }: { token: string }) {
         {latestRelease && (
           <div className="mt-8 flex flex-col items-center justify-center">
             <p className="text-sm text-gray-300">
-              {latestRelease.release_date}
+              Latest album
             </p>
 
             {/* Album cover */}
