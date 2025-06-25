@@ -4,6 +4,7 @@ export interface Track {
     name: string;
     uri: string;
     popularity: number;
+    duration_ms: number;
     artists: { name: string }[];
     album: {
         images: { url: string }[];
