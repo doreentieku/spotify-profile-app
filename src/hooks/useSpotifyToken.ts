@@ -98,7 +98,7 @@ export default function useSpotifyToken() {
                 if (prev !== null && prev > 0) return prev - 1;
                 return prev;
             });
-        }, 10000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [timeLeft]);
