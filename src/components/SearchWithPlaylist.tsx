@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -13,78 +13,99 @@ interface SearchProps {
   deviceId: string | null;
 }
 
-const GENRES = [
-  "chill", "afrobeat", "khaleeji", "rock", "jazz",
-  "lofi", "edm", "k-pop", "classical", "trap",
-  "ambient", "egyptian-pop", "pop"
-];
-
-const SEARCH_TYPES = [
-  "tracks", "albums", "artists", "shows", "playlists", "episodes", "acoustic", "relaxing", "top hits", "live"
-];
-
-
 export default function SearchWithPlaylist({
   accessToken,
   deviceId,
 }: SearchProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([
-    SEARCH_TYPES[Math.floor(Math.random() * SEARCH_TYPES.length)],
-  ]);
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [playlistName, setPlaylistName] = useState("");
+  const [playlistName, setPlaylistName] = useState(
+    "SPOTICIZR - Custom Playlist"
+  );
   const [message, setMessage] = useState("");
   const profile = useSpotifyProfile(accessToken);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([
-    GENRES[Math.floor(Math.random() * GENRES.length)],
-  ]);
+  const [searchInput, setSearchInput] = useState("");
+  const [suggestions, setSuggestions] = useState<Track[]>([]);
+  const suggestionRef = useRef<HTMLUListElement>(null);
 
 
-  // Toggle genre multi-select
-  const toggleGenre = (genre: string) => {
-    setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-    );
-  };
-
-  // Toggle type multi-select
-  const toggleType = (type: string) => {
-    setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
-  };
-
-  // Update playlist name based on selected genres and types
   useEffect(() => {
-    if (selectedGenres.length === 0) {
-      setPlaylistName("Custom Playlist from Spoticizr");
-      return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionRef.current &&
+        !suggestionRef.current.contains(event.target as Node)
+      ) {
+        setSuggestions([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Initial fetch for suggested tracks and updates on accessToken change
+  useEffect(() => {
+    if (accessToken) {
+      fetchSearchResult("afrobeat tracks");
     }
+  }, [accessToken]);
 
-    const genresPart =
-      selectedGenres.length === 1
-        ? selectedGenres[0][0].toUpperCase() + selectedGenres[0].slice(1)
-        : selectedGenres
-          .slice(0, 3) // max 3 genres in title
-          .map((g) => g[0].toUpperCase() + g.slice(1))
-          .join(" + ");
+  // Update playlist name whenever searchInput or suggestion is used
+  useEffect(() => {
+    if (searchInput.trim()) {
+      const title = searchInput.trim();
+      setPlaylistName(
+        `SPOTICIZR - ${title[0].toUpperCase() + title.slice(1)} MIX`
+      );
+    } else {
+      setPlaylistName("SPOTICIZR - Custom Playlist");
+    }
+  }, [searchInput]);
 
-    const typesPart = selectedTypes.length > 0 ? selectedTypes.join(", ") : "";
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (searchInput.trim().length > 1) {
+        fetchTrackSuggestions(searchInput);
+      } else {
+        setSuggestions([]);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [searchInput]);
 
-    setPlaylistName(`SPOTICIZR - ${genresPart} ${typesPart}`);
-  }, [selectedGenres, selectedTypes]);
+  const fetchTrackSuggestions = async (term: string) => {
+    try {
+      const res = await fetch(
+        `/api/search?q=${encodeURIComponent(term)}&type=track&limit=5`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const data = await res.json();
+      setSuggestions(data.items || []);
+    } catch (err) {
+      console.error("Suggestion error", err);
+      setSuggestions([]);
+    }
+  };
 
-  const fetchSearchResult = async () => {
+  const handleSuggestionClick = (trackName: string) => {
+    setSearchInput(trackName);
+    setSuggestions([]);
+    setPlaylistName(
+      `SPOTICIZR - ${trackName[0].toUpperCase() + trackName.slice(1)} MIX`
+    );
+    fetchSearchResult(trackName);
+  };
+
+  const fetchSearchResult = async (queryOverride?: string) => {
     setLoading(true);
     setError(null);
-
-    // Join genres with spaces for search query
-    const genresString = selectedGenres.join(" ");
-    const typesString = selectedTypes.join(" ");
-    const query = `${genresString} ${typesString}`.trim();
+    const query = queryOverride ?? searchInput.trim();
+    if (!query) return;
 
     try {
       const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
@@ -92,14 +113,15 @@ export default function SearchWithPlaylist({
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
+      if (!res.ok)
         throw new Error(data.error?.message || "Failed to fetch results");
-      }
-
       setTracks(data.items || []);
+
+      // Set playlist name based on fetched query
+      setPlaylistName(
+        `SPOTICIZR - ${query[0].toUpperCase() + query.slice(1)} MIX`
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -107,12 +129,11 @@ export default function SearchWithPlaylist({
     }
   };
 
-  // Fetch data whenever selected genres/types or accessToken change
   useEffect(() => {
-    if (accessToken) {
-      fetchSearchResult();
+    if (accessToken && searchInput.trim()) {
+      fetchSearchResult(searchInput);
     }
-  }, [selectedGenres, selectedTypes, accessToken]);
+  }, [accessToken]);
 
   const addToPlaylist = (track: Track) => {
     if (!selectedTracks.find((t) => t.id === track.id)) {
@@ -127,53 +148,42 @@ export default function SearchWithPlaylist({
     setSelectedTracks((prev) => [...prev, ...newTracks]);
   };
 
-
   const removeFromPlaylist = (id: string) => {
     setSelectedTracks((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
     <div className="py-8 space-y-10 max-w-8xl mx-auto text-white">
-      {/* Genres multi-select */}
-      <div className="flex flex-wrap gap-3 mb-4">
-        {GENRES.map((genre) => {
-          const isSelected = selectedGenres.includes(genre);
-          return (
-            <button
-              key={genre}
-              onClick={() => toggleGenre(genre)}
-              className={`px-3 py-1 rounded-full text-sm border transition
-                ${isSelected
-                  ? "bg-green-600 text-white"
-                  : "bg-zinc-800 text-gray-300"
-                }
-                hover:bg-green-700`}
-            >
-              {genre}
-            </button>
-          );
-        })}
-      </div>
+      <div>Search for tracks</div>
 
-      {/* Search types multi-select */}
-      <div className="flex flex-wrap gap-3 mb-6">
-        {SEARCH_TYPES.map((type) => {
-          const isSelected = selectedTypes.includes(type);
-          return (
-            <button
-              key={type}
-              onClick={() => toggleType(type)}
-              className={`px-3 py-1 rounded-full text-sm border transition
-                ${isSelected
-                  ? "bg-green-600 text-white"
-                  : "bg-zinc-800 text-gray-300"
-                }
-                hover:bg-green-700`}
-            >
-              {type}
-            </button>
-          );
-        })}
+      <div className="relative mb-6">
+        <input
+          type="text"
+          placeholder="Search for a track..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="w-full px-4 py-2 rounded-md bg-zinc-900 text-white border border-zinc-700 focus:outline-none focus:ring focus:ring-green-500"
+        />
+        {suggestions.length > 0 && (
+          <ul
+            ref={suggestionRef}
+            className="absolute z-50 w-full bg-zinc-800 border border-zinc-700 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
+          >
+            {suggestions.map((track) => (
+              <li
+                key={track.id}
+                onClick={() => handleSuggestionClick(track.name)}
+                className="px-4 py-2 cursor-pointer hover:bg-green-600 text-white text-sm"
+              >
+                {track.name}
+                <span className="text-white/60">
+                  {" "}
+                  – {track.artists[0]?.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {tracks.length > 0 && (
@@ -188,12 +198,10 @@ export default function SearchWithPlaylist({
       )}
 
       <div className="flex flex-col lg:flex-row gap-6 mb-10">
-        {/* Playlist Builder */}
         {selectedTracks.length > 0 && (
           <div className="flex-1 space-y-6">
             <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4">
               <h3 className="text-xl font-bold">Selected Tracks</h3>
-
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {selectedTracks.map((track) => (
                   <div
@@ -235,7 +243,6 @@ export default function SearchWithPlaylist({
         )}
       </div>
 
-      {/* Track Cards */}
       {loading && <p className="text-gray-300">Loading...</p>}
 
       {!loading && !error && tracks.length > 0 && (
@@ -256,7 +263,6 @@ export default function SearchWithPlaylist({
               <div className="text-xs text-white/60 truncate">
                 {track.artists.map((a) => a.name).join(", ")}
               </div>
-
               <div className="flex gap-4 mt-2">
                 <PlayButton
                   uri={track.uri}
