@@ -5,14 +5,7 @@ import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
 import { Track } from "@/types/spotify";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import GenreBarChart from "./GenreBarChart";
 
 interface SavedTracksProps {
   accessToken: string;
@@ -299,31 +292,11 @@ export default function SavedTracks({
         </div>
       )}
 
-      {genreChartData.length > 0 && (
-        <div className="mb-10">
-          <h3 className="text-white font-semibold text-sm mb-2">
-            Genre Distribution
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={genreChartData.slice(0, 12)}>
-              <XAxis dataKey="genre" tick={{ fill: "white", fontSize: 12 }} />
-              <YAxis tick={{ fill: "white", fontSize: 12 }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#222",
-                  border: "none",
-                  color: "white",
-                }}
-                cursor={{ fill: "rgba(255, 255, 255, 0.1)" }}
-              />
-              <Bar dataKey="count" fill="#22c55e" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-          <p className="text-white/60 text-xs mt-2">
-            Top 12 genres in your saved tracks
-          </p>
-        </div>
-      )}
+      <GenreBarChart
+        data={genreChartData}
+        title="Genre Distribution"
+        subtitle="Top 12 genres in your saved tracks"
+      />
     </div>
   );
 }
