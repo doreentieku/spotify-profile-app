@@ -9,6 +9,8 @@ import {
   Tooltip,
 } from "recharts";
 
+import { useGenreFilter } from "@/context/GenreFilterContext";
+
 interface GenreBarChartProps {
   data: { genre: string; count: number }[];
   maxBars?: number;
@@ -18,39 +20,46 @@ interface GenreBarChartProps {
 
 export default function GenreBarChart({
   data,
-  maxBars = 12,
+  maxBars = 20,
   title = "Genre Distribution",
   subtitle = "",
 }: GenreBarChartProps) {
-  const chartData = data
-    .sort((a, b) => b.count - a.count)
-    .slice(0, maxBars);
+  const { setSelectedGenre } = useGenreFilter();
+  const chartData = data.sort((a, b) => b.count - a.count).slice(0, maxBars);
 
   if (!chartData.length) return null;
 
   return (
     <div className="mb-10">
       {title && (
-        <h2 className="text-lg font-bold text-white">{title}</h2>
+        <h3 className="text-white font-semibold text-sm mb-2">{title}</h3>
       )}
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData}>
-          <XAxis dataKey="genre" tick={{ fill: "white", fontSize: 12 }} />
+        <BarChart data={chartData} barSize={40}>
+          <XAxis dataKey="genre" tick={{ fill: "white", fontSize: 10 }} />
           <YAxis tick={{ fill: "white", fontSize: 12 }} />
-          <Tooltip
+          <Tooltip labelClassName="backdrop-blur-lg"
             contentStyle={{
               backgroundColor: "#222",
               border: "none",
-              color: "white",
             }}
             cursor={{ fill: "rgba(255, 255, 255, 0.1)" }}
           />
-          <Bar dataKey="count" fill="#22c55e" radius={[4, 4, 0, 0]} />
+          <Bar
+            dataKey="count"
+            fill="#22c55e"
+            radius={[10, 10, 0, 0]}
+            onClick={(data) => {
+              const payload = (data as any).payload;
+              if (payload?.genre) {
+                setSelectedGenre(payload.genre);
+              }
+            }}
+            className="cursor-pointer"
+          />
         </BarChart>
       </ResponsiveContainer>
-      {subtitle && (
-        <p className="text-white/60 text-xs mt-2">{subtitle}</p>
-      )}
+      {subtitle && <p className="text-white/60 text-xs mt-2">{subtitle}</p>}
     </div>
   );
 }

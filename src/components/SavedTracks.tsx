@@ -6,6 +6,10 @@ import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
 import { Track } from "@/types/spotify";
 import GenreBarChart from "./GenreBarChart";
+import { useGenreFilter } from "@/context/GenreFilterContext";
+import CreatePlaylist from "@/components/CreatePlaylist";
+import useSpotifyProfile from "@/lib/useSpotifyProfile";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface SavedTracksProps {
   accessToken: string;
@@ -34,7 +38,7 @@ export default function SavedTracks({
   const [allTracks, setAllTracks] = useState<Track[]>([]);
   const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
   const [allGenres, setAllGenres] = useState<string[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState("");
+  const { selectedGenre, setSelectedGenre } = useGenreFilter();
   const [error, setError] = useState<string | null>(null);
 
   const [page, setPage] = useState(1);
@@ -45,9 +49,16 @@ export default function SavedTracks({
     page * pageSize
   );
 
+  const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
+  const [playlistName, setPlaylistName] = useState(
+    "SPOTICIZR - Filtered Playlist"
+  );
+  const [message, setMessage] = useState("");
+
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const profile = useSpotifyProfile(accessToken);
   const logout = useSpotifyLogout();
 
   useEffect(() => {
@@ -126,7 +137,7 @@ export default function SavedTracks({
         setGenreChartData(genreChartData);
 
         setLoadingProgress(100);
-        setTimeout(() => setIsLoading(false), 300); // Allow final bar to fill
+        setTimeout(() => setIsLoading(false), 300);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
         setIsLoading(false);
@@ -139,10 +150,13 @@ export default function SavedTracks({
   useEffect(() => {
     if (selectedGenre === "") {
       setFilteredTracks(allTracks);
+      setPlaylistName("SPOTICIZR - All Saved Tracks");
     } else {
-      setFilteredTracks(
-        allTracks.filter((t) => t.genres?.includes(selectedGenre))
+      const genreFiltered = allTracks.filter((t) =>
+        t.genres?.includes(selectedGenre)
       );
+      setFilteredTracks(genreFiltered);
+      setPlaylistName(`SPOTICIZR - ${selectedGenre} Tracks`);
     }
     setPage(1);
   }, [selectedGenre, allTracks]);
@@ -172,7 +186,6 @@ export default function SavedTracks({
         genreMap[artist.id] = artist.genres;
       });
 
-      // Increase progress from 50 → 100 as artist data is fetched
       progressCb(50 + ((i + 1) / totalChunks) * 50);
     }
 
@@ -186,10 +199,7 @@ export default function SavedTracks({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4">
-      <h2 className="text-lg font-bold text-white mb-4">Your Saved Tracks</h2>
-
-      {/* Progress Bar */}
+    <div className="max-w-8xl mx-auto px-4">
       {isLoading && (
         <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden mb-4">
           <div
@@ -199,7 +209,75 @@ export default function SavedTracks({
         </div>
       )}
 
-      {/* Genre Filter */}
+      {selectedTracks.length > 0 && (
+        <div className="mb-10">
+          <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4 mb-6">
+            <h3 className="text-xl font-bold text-white">Selected Tracks</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+              {selectedTracks.map((track) => (
+                <div
+                  key={track.id}
+                  className="bg-black/40 p-3 rounded-lg text-sm text-white flex flex-col gap-1"
+                >
+                  <div className="truncate font-semibold">{track.name}</div>
+                  <div className="text-xs text-white/60 truncate">
+                    {track.artists.map((a) => a.name).join(", ")}
+                  </div>
+                  <button
+                    onClick={() =>
+                      setSelectedTracks((prev) =>
+                        prev.filter((t) => t.id !== track.id)
+                      )
+                    }
+                    className="text-red-400 text-xs underline mt-1 cursor-pointer"
+                  >
+                    ❌ Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <CreatePlaylist
+            accessToken={accessToken}
+            profile={profile}
+            selectedTracks={selectedTracks}
+            setSelectedTracks={setSelectedTracks}
+            playlistName={playlistName}
+            onSuccess={() => {
+              setMessage(`Playlist "${playlistName}" created!`);
+              setTimeout(() => setMessage(""), 5000);
+            }}
+          />
+        </div>
+      )}
+
+      <GenreBarChart
+        data={genreChartData}
+        title="Genre in Saved Tracks"
+        subtitle="Top 12 genres in your saved tracks"
+      />
+
+      {filteredTracks.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={() =>
+              setSelectedTracks((prev) => [
+                ...prev,
+                ...filteredTracks.filter(
+                  (track) => !prev.some((t) => t.id === track.id)
+                ),
+              ])
+            }
+            className="px-4 py-2 text-sm font-semibold rounded-full bg-green-700 hover:bg-green-800 text-white transition shadow cursor-pointer"
+          >
+            + Add Filtered Tracks to Playlist
+          </button>
+        </div>
+      )}
+
+      <h2 className="text-lg font-bold text-white mb-4">Your Saved Tracks</h2>
+
       <div className="mb-6">
         <label className="text-white text-sm mr-2">Filter by Genre:</label>
         <select
@@ -243,7 +321,6 @@ export default function SavedTracks({
               {track.artists.map((a) => a.name).join(", ")}
             </p>
 
-            {/* Popularity bar */}
             <div className="mt-2 group relative">
               <div className="text-xs text-white/60 mb-1">
                 Global Popularity
@@ -265,11 +342,20 @@ export default function SavedTracks({
               accessToken={accessToken}
               deviceId={deviceId}
             />
+            <button
+              onClick={() =>
+                setSelectedTracks((prev) =>
+                  prev.some((t) => t.id === track.id) ? prev : [...prev, track]
+                )
+              }
+              className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full bg-green-500/20 hover:bg-green-800/80 transition duration-200 shadow-lg cursor-pointer"
+            >
+              <IoIosAddCircleOutline />
+            </button>
           </div>
         ))}
       </div>
 
-      {/* Pagination Controls */}
       {pageCount > 1 && (
         <div className="flex justify-center items-center space-x-4 text-white">
           <button
@@ -292,11 +378,11 @@ export default function SavedTracks({
         </div>
       )}
 
-      <GenreBarChart
-        data={genreChartData}
-        title="Genre Distribution"
-        subtitle="Top 12 genres in your saved tracks"
-      />
+      {message && (
+        <div className="fixed top-28 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-white text-center bg-black/70 rounded-md border border-white/10 z-50">
+          {message}
+        </div>
+      )}
     </div>
   );
 }
