@@ -80,7 +80,7 @@ export default function UserPlaylists({
 
   return (
     <div className="py-8 space-y-6 max-w-6xl mx-auto text-white">
-      <h2 className="text-2xl font-bold">Your Playlists</h2>
+      <h2 className="text-2xl font-bold">Your Saved Playlists</h2>
 
       {error && <p className="text-red-400">{error}</p>}
       {!error && playlists.length === 0 && (
