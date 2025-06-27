@@ -2,6 +2,14 @@
 
 import { useEffect, useState } from "react";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -15,7 +23,9 @@ interface Artist {
 
 export default function TopGenres({ accessToken }: TopGenresProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
-  const [genreCounts, setGenreCounts] = useState<Record<string, number>>({});
+  const [genreData, setGenreData] = useState<{ genre: string; count: number }[]>(
+    []
+  );
   const [error, setError] = useState<string | null>(null);
   const logout = useSpotifyLogout();
 
@@ -43,22 +53,22 @@ export default function TopGenres({ accessToken }: TopGenresProps) {
             logout();
             return;
           }
-          throw new Error(msg || "Failed to fetch top genre");
+          throw new Error(msg || "Failed to fetch top genres");
         }
-        const allGenres = data.items.flatMap((artist: Artist) => artist.genres);
 
+        const allGenres = data.items.flatMap((artist: Artist) => artist.genres);
         const genreFrequency: Record<string, number> = {};
+
         for (const genre of allGenres) {
           genreFrequency[genre] = (genreFrequency[genre] || 0) + 1;
         }
 
-        setGenreCounts(
-          Object.fromEntries(
-            Object.entries(genreFrequency)
-              .sort((a, b) => b[1] - a[1])
-              .slice(0, 10)
-          )
-        );
+        const topGenres = Object.entries(genreFrequency)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 12)
+          .map(([genre, count]) => ({ genre, count }));
+
+        setGenreData(topGenres);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       }
@@ -68,7 +78,7 @@ export default function TopGenres({ accessToken }: TopGenresProps) {
   }, [accessToken, timeRange]);
 
   return (
-    <div className="max-w-8xl mx-auto px-4">
+    <div className="max-w-6xl mx-auto px-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold text-white">Top Played Genres</h2>
         <select
@@ -83,31 +93,32 @@ export default function TopGenres({ accessToken }: TopGenresProps) {
       </div>
 
       {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-      {!Object.keys(genreCounts).length && !error && (
+      {!genreData.length && !error && (
         <p className="text-gray-300 text-sm text-center">Loading...</p>
       )}
 
-      <ul className="space-y-2">
-        {Object.entries(genreCounts).map(([genre, count]) => (
-          <li
-            key={genre}
-            className="flex items-center space-x-4 bg-white/10 px-4 py-2 rounded-md"
-          >
-            <div className="w-40 text-white text-sm capitalize">{genre}</div>
-            <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
-              <div
-                className="bg-green-400 h-2 rounded-full transition-all duration-700 ease-out"
-                style={{
-                  width: `${
-                    (count / genreCounts[Object.keys(genreCounts)[0]]) * 100
-                  }%`,
+      {genreData.length > 0 && (
+        <div className="mb-10">
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={genreData}>
+              <XAxis dataKey="genre" tick={{ fill: 'white', fontSize: 12 }} />
+              <YAxis tick={{ fill: 'white', fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#222",
+                  border: "none",
+                  color: "white",
                 }}
-              ></div>
-            </div>
-            <div className="text-white/60 text-xs">{count}</div>
-          </li>
-        ))}
-      </ul>
+                cursor={{ fill: "rgba(255, 255, 255, 0.1)" }}
+              />
+              <Bar dataKey="count" fill="#22c55e" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <p className="text-white/60 text-xs mt-2">
+            Top 12 genres based on your most-played artists
+          </p>
+        </div>
+      )}
     </div>
   );
 }

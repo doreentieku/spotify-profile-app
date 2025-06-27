@@ -5,6 +5,14 @@ import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
 import { Track } from "@/types/spotify";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface SavedTracksProps {
   accessToken: string;
@@ -26,6 +34,10 @@ export default function SavedTracks({
   accessToken,
   deviceId,
 }: SavedTracksProps) {
+  const [genreChartData, setGenreChartData] = useState<
+    { genre: string; count: number }[]
+  >([]);
+
   const [allTracks, setAllTracks] = useState<Track[]>([]);
   const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
   const [allGenres, setAllGenres] = useState<string[]>([]);
@@ -104,7 +116,22 @@ export default function SavedTracks({
           enrichedTracks.flatMap((t) => t.genres || [])
         );
         setAllGenres(Array.from(allGenreSet).sort());
+
+        const genreCountMap: Record<string, number> = {};
+
+        enrichedTracks.forEach((track) => {
+          (track.genres || []).forEach((genre) => {
+            genreCountMap[genre] = (genreCountMap[genre] || 0) + 1;
+          });
+        });
+
+        const genreChartData = Object.entries(genreCountMap)
+          .map(([genre, count]) => ({ genre, count }))
+          .sort((a, b) => b.count - a.count);
+
         setFilteredTracks(enrichedTracks);
+        setGenreChartData(genreChartData);
+
         setLoadingProgress(100);
         setTimeout(() => setIsLoading(false), 300); // Allow final bar to fill
       } catch (err) {
@@ -164,7 +191,6 @@ export default function SavedTracks({
     if (popularity >= 40) return "bg-yellow-400";
     return "bg-red-400";
   }
-
 
   return (
     <div className="max-w-7xl mx-auto px-4">
@@ -256,7 +282,7 @@ export default function SavedTracks({
           <button
             disabled={page === 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-30 cursor-pointer"
+            className="px-4 py-2 rounded bg-zinc-700 cursor-pointer hover:bg-zinc-600 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Previous
           </button>
@@ -266,10 +292,36 @@ export default function SavedTracks({
           <button
             disabled={page === pageCount}
             onClick={() => setPage((p) => p + 1)}
-            className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-30 cursor-pointer"
+            className="px-4 py-2 rounded bg-zinc-700 cursor-pointer hover:bg-zinc-600 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Next
           </button>
+        </div>
+      )}
+
+      {genreChartData.length > 0 && (
+        <div className="mb-10">
+          <h3 className="text-white font-semibold text-sm mb-2">
+            Genre Distribution
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={genreChartData.slice(0, 12)}>
+              <XAxis dataKey="genre" tick={{ fill: "white", fontSize: 12 }} />
+              <YAxis tick={{ fill: "white", fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#222",
+                  border: "none",
+                  color: "white",
+                }}
+                cursor={{ fill: "rgba(255, 255, 255, 0.1)" }}
+              />
+              <Bar dataKey="count" fill="#22c55e" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <p className="text-white/60 text-xs mt-2">
+            Top 12 genres in your saved tracks
+          </p>
         </div>
       )}
     </div>
