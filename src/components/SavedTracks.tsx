@@ -379,7 +379,7 @@ export default function SavedTracks({
       )}
 
       {message && (
-        <div className="fixed top-28 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-white text-center bg-black/70 rounded-md border border-white/10 z-50">
+        <div className="fixed top-28 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-green-500 text-center bg-black/70 rounded-md border border-white/10 z-50">
           {message}
         </div>
       )}

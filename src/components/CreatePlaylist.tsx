@@ -107,7 +107,7 @@ export default function CreatePlaylist({
       </button>
 
       {message && (
-        <div className="text-center text-sm text-white mt-2">{message}</div>
+        <div className="text-center text-sm text-green-500 mt-2 uppercase">{message}</div>
       )}
     </div>
   );
