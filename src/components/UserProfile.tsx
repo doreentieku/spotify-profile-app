@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import LogoutButton from './LogoutButton';
+import LogoutButton from "./LogoutButton";
 import PlayerBar from "@/components/PlayerBar";
 
 interface Props {
@@ -10,12 +10,8 @@ interface Props {
   accessToken: string;
 }
 
-export default function UserProfile({
-  displayName,
-  country,
-  product,
-}: Props) {
-  const token = localStorage.getItem('spotify_access_token') || '';
+export default function UserProfile({ displayName, country, product }: Props) {
+  const token = localStorage.getItem("spotify_access_token") || "";
 
   return (
     <div>
@@ -23,10 +19,19 @@ export default function UserProfile({
         <a href="/dashboard" className="text-gray-400 hover:text-white">
           Home
         </a>
-        <a href="/dashboard/view-library" className="text-gray-400 hover:text-white">
-          View Library
+        <a href="/dashboard/liked-tracks" className="text-gray-400 hover:text-white">
+          Liked Tracks
         </a>
-        <a href="/dashboard/create-playlist" className="text-gray-400 hover:text-white">
+        <a
+          href="/dashboard/saved-playlists"
+          className="text-gray-400 hover:text-white"
+        >
+          Saved Playlists
+        </a>
+        <a
+          href="/dashboard/create-playlist"
+          className="text-gray-400 hover:text-white"
+        >
           Create Playlist
         </a>
       </nav>

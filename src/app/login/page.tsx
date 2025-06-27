@@ -141,6 +141,7 @@ export default function LoginPage() {
       "user-read-playback-state",
       "user-read-currently-playing",
       "user-read-recently-played",
+      "user-library-read"
     ].join(" ");
 
     const params = new URLSearchParams({
