@@ -152,7 +152,7 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
   return (
     <div className="max-w-8xl mx-auto">
       <div className="flex justify-between items-center mb-4 px-4">
-        <h2 className="text-lg font-bold text-white pl-5">Top Artists</h2>
+        <h2 className="text-lg font-bold text-white pl-5">Top Played Artists</h2>
         <p>Click to view artist albums</p>
         <select
           value={timeRange}

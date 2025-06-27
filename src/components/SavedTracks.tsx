@@ -4,22 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
+import { Track } from "@/types/spotify";
 
 interface SavedTracksProps {
   accessToken: string;
   deviceId: string | null;
-}
-
-interface Track {
-  id: string;
-  name: string;
-  uri: string;
-  popularity: number;
-  album: {
-    images: { url: string }[];
-  };
-  artists: { id: string; name: string }[];
-  genres?: string[];
 }
 
 interface SavedTrackItem {
@@ -33,7 +22,10 @@ interface SpotifySavedTracksResponse {
   next: string | null;
 }
 
-export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps) {
+export default function SavedTracks({
+  accessToken,
+  deviceId,
+}: SavedTracksProps) {
   const [allTracks, setAllTracks] = useState<Track[]>([]);
   const [filteredTracks, setFilteredTracks] = useState<Track[]>([]);
   const [allGenres, setAllGenres] = useState<string[]>([]);
@@ -43,7 +35,10 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
   const [page, setPage] = useState(1);
   const pageSize = 40;
   const pageCount = Math.ceil(filteredTracks.length / pageSize);
-  const paginatedTracks = filteredTracks.slice((page - 1) * pageSize, page * pageSize);
+  const paginatedTracks = filteredTracks.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
 
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +51,9 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
         setIsLoading(true);
         setLoadingProgress(5);
 
-        let nextUrl: string | null = `https://api.spotify.com/v1/me/tracks?limit=50`;
+        let nextUrl:
+          | string
+          | null = `https://api.spotify.com/v1/me/tracks?limit=50`;
         let allItems: SavedTrackItem[] = [];
         let totalFetched = 0;
         let totalExpected = 0;
@@ -65,7 +62,9 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
           const res = await fetch(nextUrl, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
-          const data: SpotifySavedTracksResponse & { error?: { message: string } } = await res.json();
+          const data: SpotifySavedTracksResponse & {
+            error?: { message: string };
+          } = await res.json();
 
           if (!res.ok) {
             const msg = data.error?.message || "";
@@ -86,8 +85,14 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
           nextUrl = data.next;
         }
 
-        const artistIds = allItems.flatMap((item) => item.track.artists.map((a) => a.id));
-        const genreMap = await fetchArtistGenres(artistIds, accessToken, setLoadingProgress);
+        const artistIds = allItems.flatMap((item) =>
+          item.track.artists.map((a) => a.id)
+        );
+        const genreMap = await fetchArtistGenres(
+          artistIds,
+          accessToken,
+          setLoadingProgress
+        );
 
         const enrichedTracks = allItems.map((item) => ({
           ...item.track,
@@ -95,7 +100,9 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
         }));
 
         setAllTracks(enrichedTracks);
-        const allGenreSet = new Set(enrichedTracks.flatMap((t) => t.genres || []));
+        const allGenreSet = new Set(
+          enrichedTracks.flatMap((t) => t.genres || [])
+        );
         setAllGenres(Array.from(allGenreSet).sort());
         setFilteredTracks(enrichedTracks);
         setLoadingProgress(100);
@@ -113,7 +120,9 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
     if (selectedGenre === "") {
       setFilteredTracks(allTracks);
     } else {
-      setFilteredTracks(allTracks.filter((t) => t.genres?.includes(selectedGenre)));
+      setFilteredTracks(
+        allTracks.filter((t) => t.genres?.includes(selectedGenre))
+      );
     }
     setPage(1);
   }, [selectedGenre, allTracks]);
@@ -131,9 +140,12 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
     const totalChunks = chunks.length;
 
     for (let i = 0; i < totalChunks; i++) {
-      const res = await fetch(`https://api.spotify.com/v1/artists?ids=${chunks[i].join(",")}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `https://api.spotify.com/v1/artists?ids=${chunks[i].join(",")}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
 
       data.artists.forEach((artist: any) => {
@@ -152,6 +164,7 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
     if (popularity >= 40) return "bg-yellow-400";
     return "bg-red-400";
   }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4">
@@ -186,7 +199,9 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
 
       {error && <p className="text-red-500 text-sm text-center">{error}</p>}
       {!allTracks.length && !error && !isLoading && (
-        <p className="text-gray-300 text-sm text-center">No saved tracks found.</p>
+        <p className="text-gray-300 text-sm text-center">
+          No saved tracks found.
+        </p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
@@ -211,7 +226,9 @@ export default function SavedTracks({ accessToken, deviceId }: SavedTracksProps)
 
             {/* Popularity bar */}
             <div className="mt-2 group relative">
-              <div className="text-xs text-white/60 mb-1">Global Popularity</div>
+              <div className="text-xs text-white/60 mb-1">
+                Global Popularity
+              </div>
               <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
                 <div
                   className={`${getPopularityColor(

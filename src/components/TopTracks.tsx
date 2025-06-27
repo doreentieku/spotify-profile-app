@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
+import { Track } from "@/types/spotify";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 interface SpotifyTopTracksResponse {
@@ -14,18 +15,6 @@ interface SpotifyTopTracksResponse {
 interface TopTracksProps {
   accessToken: string;
   deviceId: string | null;
-}
-
-interface Track {
-  popularity: number;
-  id: string;
-  name: string;
-  uri: string;
-  album: {
-    images: { url: string }[];
-  };
-  artists: { name: string }[];
-  external_urls: { spotify: string };
 }
 
 export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
@@ -92,7 +81,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
   return (
     <div className="max-w-8xl mx-auto">
       <div className="flex justify-between items-center mb-4 px-4">
-        <h2 className="text-lg font-bold text-white pl-5">Top Tracks</h2>
+        <h2 className="text-lg font-bold text-white pl-5">Top Played Tracks</h2>
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value as TimeRange)}

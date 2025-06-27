@@ -70,7 +70,7 @@ export default function TopGenres({ accessToken }: TopGenresProps) {
   return (
     <div className="max-w-8xl mx-auto px-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-bold text-white">Top Genres</h2>
+        <h2 className="text-lg font-bold text-white">Top Played Genres</h2>
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value as TimeRange)}
