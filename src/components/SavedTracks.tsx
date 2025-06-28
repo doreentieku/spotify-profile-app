@@ -267,7 +267,7 @@ export default function SavedTracks({
         </p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {paginatedTracks.map((track, index) => (
           <div
             key={track.id}
@@ -303,21 +303,23 @@ export default function SavedTracks({
                 Popularity: {track.popularity}/100
               </div>
             </div>
-            <PlayButton
-              uri={track.uri}
-              accessToken={accessToken}
-              deviceId={deviceId}
-            />
-            <button
-              onClick={() =>
-                setSelectedTracks((prev) =>
-                  prev.some((t) => t.id === track.id) ? prev : [...prev, track]
-                )
-              }
-              className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full bg-green-500/20 hover:bg-green-800/80 transition duration-200 shadow-lg cursor-pointer"
-            >
-              <IoIosAddCircleOutline />
-            </button>
+            <div className="flex gap-4 mt-2">
+              <PlayButton
+                uri={track.uri}
+                accessToken={accessToken}
+                deviceId={deviceId}
+              />
+              <button
+                onClick={() =>
+                  setSelectedTracks((prev) =>
+                    prev.some((t) => t.id === track.id) ? prev : [...prev, track]
+                  )
+                }
+                className="mt-3 px-4 py-2 text-sm font-medium text-white rounded-full bg-green-500/20 hover:bg-green-800/80 transition duration-200 shadow-lg cursor-pointer"
+              >
+                <IoIosAddCircleOutline />
+              </button>
+            </div>
           </div>
         ))}
       </div>
