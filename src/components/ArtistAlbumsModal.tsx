@@ -27,6 +27,7 @@ export function ArtistAlbumsModal({
             >
                 <div className="flex justify-between items-center">
                     <h3 className="text-xl font-bold">Albums by {selectedArtist.name}</h3>
+                    <p className="text-white/60 text-xs mt-2">Click outside to close modal</p>
                 </div>
 
                 {artistAlbums.length === 0 && (

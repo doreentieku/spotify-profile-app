@@ -19,16 +19,17 @@ export function AlbumTracksModal({
     onClose,
 }: AlbumTracksModalProps) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
-            <div className="bg-zinc-900 p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4">
-                <div className="flex justify-between items-center">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md"
+            onClick={onClose} // if clicked on the backdrop, close
+        >
+            <div
+                className="bg-zinc-900 p-6 rounded-lg max-w-6xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4"
+                onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside modal
+            >
+                <div className="flex justify-between">
                     <h3 className="text-xl font-bold">Tracks in "{album.name}"</h3>
-                    <button
-                        onClick={onClose}
-                        className="text-red-400 hover:text-red-600 text-lg"
-                    >
-                        ✖
-                    </button>
+                    <p className="text-white/60 text-xs mt-2">Click outside to close modal</p>
                 </div>
 
                 {albumTracks.length === 0 && (

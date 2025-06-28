@@ -9,7 +9,6 @@ import GenreBarChart from "./GenreBarChart";
 import { useGenreFilter } from "@/context/GenreFilterContext";
 import SelectedTracks from "@/components/SelectedTracks";
 import Toast from "@/components/Toast";
-import useSpotifyProfile from "@/lib/useSpotifyProfile";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 interface SavedTracksProps {
@@ -59,7 +58,6 @@ export default function SavedTracks({
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  const profile = useSpotifyProfile(accessToken);
   const logout = useSpotifyLogout();
 
   useEffect(() => {
