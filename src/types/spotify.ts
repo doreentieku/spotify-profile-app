@@ -12,3 +12,12 @@ export interface Track {
   external_urls: { spotify: string };
   genres?: string[];
 }
+
+export interface Artist {
+  popularity: number;
+  id: string;
+  name: string;
+  genres: string[];
+  images: { url: string }[];
+  external_urls: { spotify: string };
+}

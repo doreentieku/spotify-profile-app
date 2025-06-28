@@ -6,6 +6,9 @@ import Image from "next/image";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
 import PlayButton from "@/components/PlayButton";
 import { Track } from "@/types/spotify";
+import { ArtistAlbumsModal } from "@/components/ArtistAlbumsModal";
+import { AlbumTracksModal } from "@/components/AlbumTracksModal";
+
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -241,99 +244,30 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
           <ArrowRight size={20} />
         </button>
         {isModalOpen && selectedArtist && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
-            <div className="bg-zinc-900 p-6 rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold">
-                  Albums by {selectedArtist.name}
-                </h3>
-                <button
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    setSelectedArtist(null);
-                    setArtistAlbums([]);
-                  }}
-                  className="text-red-400 hover:text-red-600 text-lg"
-                >
-                  ✖
-                </button>
-              </div>
-
-              {artistAlbums.length === 0 && (
-                <p className="text-gray-400">No albums found.</p>
-              )}
-
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {artistAlbums.map((album) => (
-                  <button
-                    key={album.id}
-                    onClick={() => handleAlbumClick(album)}
-                    className="block bg-white/10 rounded-md p-2 hover:bg-white/20 transition text-left"
-                  >
-                    <Image
-                      src={album.images[0]?.url}
-                      alt={album.name}
-                      width={300}
-                      height={300}
-                      className="w-full h-40 object-cover rounded cursor-pointer"
-                    />
-                    <div className="text-sm font-medium mt-2 truncate">
-                      {album.name}
-                    </div>
-                    <div className="text-xs text-white/60 truncate">
-                      {album.release_date}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <ArtistAlbumsModal
+            selectedArtist={selectedArtist}
+            artistAlbums={artistAlbums}
+            onClose={() => {
+              setIsModalOpen(false);
+              setSelectedArtist(null);
+              setArtistAlbums([]);
+            }}
+            onAlbumClick={handleAlbumClick}
+          />
         )}
 
-        {/* Tracks Modal */}
         {isTracksModalOpen && selectedAlbum && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
-            <div className="bg-zinc-900 p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold">
-                  Tracks in "{selectedAlbum.name}"
-                </h3>
-                <button
-                  onClick={() => {
-                    setIsTracksModalOpen(false);
-                    setSelectedAlbum(null);
-                    setAlbumTracks([]);
-                  }}
-                  className="text-red-400 hover:text-red-600 text-lg"
-                >
-                  ✖
-                </button>
-              </div>
-
-              {albumTracks.length === 0 && (
-                <p className="text-gray-400">No tracks found.</p>
-              )}
-
-              <ul className="space-y-2">
-                {albumTracks.map((track, idx) => (
-                  <li
-                    key={track.id}
-                    className="flex justify-between items-center bg-white/10 px-4 py-2 rounded"
-                  >
-                    <span>
-                      {idx + 1}. {track.name}
-                    </span>
-                    <PlayButton
-                      uri={track.uri}
-                      accessToken={accessToken}
-                      deviceId={deviceId}
-                    />
-
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <AlbumTracksModal
+            album={selectedAlbum}
+            albumTracks={albumTracks}
+            accessToken={accessToken}
+            deviceId={deviceId}
+            onClose={() => {
+              setIsTracksModalOpen(false);
+              setSelectedAlbum(null);
+              setAlbumTracks([]);
+            }}
+          />
         )}
       </div>
     </div>
