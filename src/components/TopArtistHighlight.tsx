@@ -7,6 +7,11 @@ import { AlbumTracksModal } from "@/components/AlbumTracksModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface TopArtistProps {
+  token: string;
+  deviceId: string | null;
+}
+
 interface Album {
   id: string;
   name: string;
@@ -16,7 +21,7 @@ interface Album {
   external_urls: { spotify: string };
 }
 
-export default function TopArtistHighlight({ token }: { token: string }) {
+export default function TopArtistHighlight({ token, deviceId }: TopArtistProps) {
   const [topArtist, setTopArtist] = useState<Artist | null>(null);
   const [latestRelease, setLatestRelease] = useState<Album | null>(null);
   const [isTracksModalOpen, setIsTracksModalOpen] = useState(false);
@@ -199,10 +204,9 @@ export default function TopArtistHighlight({ token }: { token: string }) {
           album={latestRelease}
           albumTracks={albumTracks}
           accessToken={token}
-          deviceId={null}
+          deviceId={deviceId}
           onClose={() => setIsTracksModalOpen(false)}
         />
-
       )}
 
       {/* SVG overlay ring */}

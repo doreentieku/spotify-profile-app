@@ -45,7 +45,7 @@ export default function DashboardPage() {
         />
       </header>
 
-      <TopArtistHighlight token={token} />
+      <TopArtistHighlight token={token} deviceId={deviceId} />
 
       <section className="pb-8 mx-auto">
         <div className="rounded-2xl backdrop-blur-md  border-white/10 p-6 shadow-inner">
