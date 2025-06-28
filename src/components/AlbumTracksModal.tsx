@@ -19,7 +19,7 @@ export function AlbumTracksModal({
     onClose,
 }: AlbumTracksModalProps) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
             <div className="bg-zinc-900 p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4">
                 <div className="flex justify-between items-center">
                     <h3 className="text-xl font-bold">Tracks in "{album.name}"</h3>

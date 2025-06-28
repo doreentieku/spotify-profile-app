@@ -17,23 +17,23 @@ export function ArtistAlbumsModal({
     onAlbumClick,
 }: ArtistAlbumsModalProps) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10">
-            <div className="bg-zinc-900 p-6 rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md"
+            onClick={onClose} // if clicked on the backdrop, close
+        >
+            <div
+                className="bg-zinc-900 p-6 rounded-lg max-w-6xl w-full max-h-[80vh] overflow-y-auto text-white space-y-4"
+                onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside modal
+            >
                 <div className="flex justify-between items-center">
                     <h3 className="text-xl font-bold">Albums by {selectedArtist.name}</h3>
-                    <button
-                        onClick={onClose}
-                        className="text-red-400 hover:text-red-600 text-lg"
-                    >
-                        ✖
-                    </button>
                 </div>
 
                 {artistAlbums.length === 0 && (
                     <p className="text-gray-400">No albums found.</p>
                 )}
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {artistAlbums.map((album) => (
                         <button
                             key={album.id}

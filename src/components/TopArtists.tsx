@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
-import PlayButton from "@/components/PlayButton";
 import { Track } from "@/types/spotify";
+import { Artist } from "@/types/spotify";
 import { ArtistAlbumsModal } from "@/components/ArtistAlbumsModal";
 import { AlbumTracksModal } from "@/components/AlbumTracksModal";
-
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -19,15 +18,6 @@ interface TopArtistsProps {
 
 interface SpotifyTopArtistsResponse {
   items: Artist[];
-}
-
-interface Artist {
-  popularity: number;
-  id: string;
-  name: string;
-  genres: string[];
-  images: { url: string }[];
-  external_urls: { spotify: string };
 }
 
 export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
@@ -225,14 +215,6 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
                     Popularity: {artist.popularity}/100
                   </div>
                 </div>
-                <a
-                  href={artist.external_urls.spotify}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-white/70 hover:text-white underline"
-                >
-                  View on Spotify
-                </a>
               </div>
             ))}
           </div>

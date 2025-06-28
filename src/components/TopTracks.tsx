@@ -9,7 +9,6 @@ import { Track } from "@/types/spotify";
 import SelectedTracks from "@/components/SelectedTracks";
 import Toast from "@/components/Toast";
 
-
 type TimeRange = "short_term" | "medium_term" | "long_term";
 interface SpotifyTopTracksResponse {
   items: Track[];
