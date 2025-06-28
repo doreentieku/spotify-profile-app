@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import useSpotifyProfile from "@/lib/useSpotifyProfile";
-import CreatePlaylist from "@/components/CreatePlaylist";
+// import useSpotifyProfile from "@/lib/useSpotifyProfile";
 import { Track } from "@/types/spotify";
+import SelectedTracks from "@/components/SelectedTracks";
+import Toast from "@/components/Toast";
 
 interface SearchProps {
   accessToken: string;
@@ -25,7 +26,7 @@ export default function SearchWithPlaylist({
     "SPOTICIZR - Custom Playlist"
   );
   const [message, setMessage] = useState("");
-  const profile = useSpotifyProfile(accessToken);
+  // const profile = useSpotifyProfile(accessToken);
   const [searchInput, setSearchInput] = useState("");
   const [suggestions, setSuggestions] = useState<Track[]>([]);
   const suggestionRef = useRef<HTMLUListElement>(null);
@@ -190,58 +191,22 @@ export default function SearchWithPlaylist({
         <div className="flex justify-end mb-4">
           <button
             onClick={addAllToPlaylist}
-            className="px-4 py-2 text-sm font-semibold rounded-full bg-green-700 hover:bg-green-800 text-white transition shadow"
+            className="px-4 py-2 text-sm font-semibold rounded-full bg-green-700 hover:bg-green-800 text-white transition shadow cursor-pointer"
           >
             + Add All to Playlist
           </button>
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-6 mb-10">
-        {selectedTracks.length > 0 && (
-          <div className="flex-1 space-y-6">
-            <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4">
-              <h3 className="text-xl font-bold">Selected Tracks</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {selectedTracks.map((track) => (
-                  <div
-                    key={track.id}
-                    className="bg-black/40 p-3 rounded-lg text-sm text-white flex flex-col gap-1"
-                  >
-                    <div className="truncate font-semibold">{track.name}</div>
-                    <div className="text-xs text-white/60 truncate">
-                      {track.artists.map((a) => a.name).join(", ")}
-                    </div>
-                    <button
-                      onClick={() => removeFromPlaylist(track.id)}
-                      className="text-red-400 text-xs underline mt-1 cursor-pointer"
-                    >
-                      ❌ Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <CreatePlaylist
-              accessToken={accessToken}
-              profile={profile}
-              selectedTracks={selectedTracks}
-              setSelectedTracks={setSelectedTracks}
-              playlistName={playlistName}
-              onSuccess={() => {
-                setMessage(`Playlist "${playlistName}" created!`);
-                setTimeout(() => setMessage(""), 5000);
-              }}
-            />
-          </div>
-        )}
-
-        {message && (
-          <div className="fixed top-28 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-green-500 text-center bg-black/70 rounded-md border border-white/10 z-50">
-            {message}
-          </div>
-        )}
-      </div>
+      {selectedTracks.length > 0 && (
+        <SelectedTracks
+          selectedTracks={selectedTracks}
+          setSelectedTracks={setSelectedTracks}
+          accessToken={accessToken}
+          playlistName={playlistName}
+          setMessage={setMessage}
+        />
+      )}
 
       {loading && <p className="text-gray-300">Loading...</p>}
 
@@ -280,7 +245,13 @@ export default function SearchWithPlaylist({
           ))}
         </div>
       )}
-
+      {message && (
+        <Toast
+          message={message}
+          type="success"
+          onClear={() => setMessage("")}
+        />
+      )}
       {error && <p className="text-red-400">{error}</p>}
     </div>
   );

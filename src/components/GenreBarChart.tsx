@@ -36,7 +36,7 @@ export default function GenreBarChart({
       )}
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData} barSize={40}>
-          <XAxis dataKey="genre" tick={{ fill: "white", fontSize: 10 }} />
+          <XAxis dataKey="genre" tick={{ fill: "white", fontSize: 11 }} />
           <YAxis tick={{ fill: "white", fontSize: 12 }} />
           <Tooltip labelClassName="backdrop-blur-lg"
             contentStyle={{

@@ -46,7 +46,7 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
     const fetchTopArtists = async () => {
       try {
         const res = await fetch(
-          `https://api.spotify.com/v1/me/top/artists?limit=25&time_range=${timeRange}`,
+          `https://api.spotify.com/v1/me/top/artists?limit=30&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -183,7 +183,7 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
           className="overflow-x-auto flex space-x-4 scroll-smooth"
         >
           <div className="flex space-x-4">
-            {artists.map((artist) => (
+            {artists.map((artist, index) => (
               <div
                 key={artist.id}
                 onClick={() => handleArtistClick(artist)}
@@ -196,7 +196,7 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
                   height={300}
                   className="w-full h-40 object-cover rounded-lg mb-3"
                 />
-                <h3 className="text-lg font-semibold">{artist.name}</h3>
+                <h3 className="text-lg font-semibold"> #{index + 1} {artist.name}</h3>
                 <p className="text-sm text-white/70 mb-2">
                   {artist.genres.slice(0, 2).join(", ") || ""}
                 </p>

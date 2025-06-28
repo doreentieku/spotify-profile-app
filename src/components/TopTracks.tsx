@@ -6,6 +6,9 @@ import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
 import { Track } from "@/types/spotify";
+import SelectedTracks from "@/components/SelectedTracks";
+import Toast from "@/components/Toast";
+
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 interface SpotifyTopTracksResponse {
@@ -19,6 +22,11 @@ interface TopTracksProps {
 
 export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
+  const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
+  const [playlistName, setPlaylistName] = useState(
+    "SPOTICIZR - Custom Playlist"
+  );
+  const [message, setMessage] = useState("");
 
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +36,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
     const fetchTopTracks = async () => {
       try {
         const res = await fetch(
-          `https://api.spotify.com/v1/me/top/tracks?limit=25&time_range=${timeRange}`,
+          `https://api.spotify.com/v1/me/top/tracks?limit=30&time_range=${timeRange}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -61,6 +69,17 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
     if (accessToken) fetchTopTracks();
   }, [accessToken, timeRange]);
 
+  const addAllToPlaylist = () => {
+    const newTracks = tracks.filter(
+      (track) => !selectedTracks.some((t) => t.id === track.id)
+    );
+    setSelectedTracks((prev) => [...prev, ...newTracks]);
+  };
+
+  useEffect(() => {
+    setPlaylistName(`SPOTICIZR - Top Played Tracks of ${timeRange}`);
+  }, [selectedTracks]);
+
   function getPopularityColor(popularity: number) {
     if (popularity >= 70) return "bg-green-400";
     if (popularity >= 40) return "bg-yellow-400";
@@ -77,6 +96,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
       behavior: "smooth",
     });
   };
+
 
   return (
     <div className="max-w-8xl mx-auto">
@@ -96,6 +116,27 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
       {error && <p className="text-red-500 text-sm text-center">{error}</p>}
       {!tracks.length && !error && (
         <p className="text-gray-300 text-sm text-center">Loading...</p>
+      )}
+
+      {tracks.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={addAllToPlaylist}
+            className="px-4 py-2 text-sm font-semibold rounded-full bg-green-700 hover:bg-green-800 text-white transition shadow cursor-pointer"
+          >
+            + Add All to Playlist
+          </button>
+        </div>
+      )}
+
+      {selectedTracks.length > 0 && (
+        <SelectedTracks
+          selectedTracks={selectedTracks}
+          setSelectedTracks={setSelectedTracks}
+          accessToken={accessToken}
+          playlistName={playlistName}
+          setMessage={setMessage}
+        />
       )}
 
       <div className="relative px-4">
@@ -168,6 +209,14 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
           <ArrowRight size={20} />
         </button>
       </div>
+
+      {message && (
+        <Toast
+          message={message}
+          type="success"
+          onClear={() => setMessage("")}
+        />
+      )}
     </div>
   );
 }

@@ -29,10 +29,10 @@ export default function UserProfile({ displayName, country, product }: Props) {
           Saved Playlists
         </a>
         <a
-          href="/dashboard/create-playlist"
+          href="/dashboard/search-tracks"
           className="text-gray-400 hover:text-white"
         >
-          Create Playlist
+          Search Tracks
         </a>
       </nav>
 

@@ -7,7 +7,8 @@ import useSpotifyLogout from "@/lib/useSpotifyLogout";
 import { Track } from "@/types/spotify";
 import GenreBarChart from "./GenreBarChart";
 import { useGenreFilter } from "@/context/GenreFilterContext";
-import CreatePlaylist from "@/components/CreatePlaylist";
+import SelectedTracks from "@/components/SelectedTracks";
+import Toast from "@/components/Toast";
 import useSpotifyProfile from "@/lib/useSpotifyProfile";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
@@ -150,7 +151,7 @@ export default function SavedTracks({
   useEffect(() => {
     if (selectedGenre === "") {
       setFilteredTracks(allTracks);
-      setPlaylistName("SPOTICIZR - All Saved Tracks");
+      setPlaylistName("SPOTICIZR - Customized Saved Tracks");
     } else {
       const genreFiltered = allTracks.filter((t) =>
         t.genres?.includes(selectedGenre)
@@ -210,51 +211,18 @@ export default function SavedTracks({
       )}
 
       {selectedTracks.length > 0 && (
-        <div className="mb-10">
-          <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4 mb-6">
-            <h3 className="text-xl font-bold text-white">Selected Tracks</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-              {selectedTracks.map((track) => (
-                <div
-                  key={track.id}
-                  className="bg-black/40 p-3 rounded-lg text-sm text-white flex flex-col gap-1"
-                >
-                  <div className="truncate font-semibold">{track.name}</div>
-                  <div className="text-xs text-white/60 truncate">
-                    {track.artists.map((a) => a.name).join(", ")}
-                  </div>
-                  <button
-                    onClick={() =>
-                      setSelectedTracks((prev) =>
-                        prev.filter((t) => t.id !== track.id)
-                      )
-                    }
-                    className="text-red-400 text-xs underline mt-1 cursor-pointer"
-                  >
-                    ❌ Remove
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <CreatePlaylist
-            accessToken={accessToken}
-            profile={profile}
-            selectedTracks={selectedTracks}
-            setSelectedTracks={setSelectedTracks}
-            playlistName={playlistName}
-            onSuccess={() => {
-              setMessage(`Playlist "${playlistName}" created!`);
-              setTimeout(() => setMessage(""), 5000);
-            }}
-          />
-        </div>
+        <SelectedTracks
+          selectedTracks={selectedTracks}
+          setSelectedTracks={setSelectedTracks}
+          accessToken={accessToken}
+          playlistName={playlistName}
+          setMessage={setMessage}
+        />
       )}
 
       <GenreBarChart
         data={genreChartData}
-        title="Genre in Saved Tracks"
+        title="Top Genre in Saved Tracks"
         subtitle="Top 12 genres in your saved tracks"
       />
 
@@ -377,11 +345,12 @@ export default function SavedTracks({
           </button>
         </div>
       )}
-
       {message && (
-        <div className="fixed top-28 left-1/2 -translate-x-1/2 px-5 py-3 text-lg text-green-500 text-center bg-black/70 rounded-md border border-white/10 z-50">
-          {message}
-        </div>
+        <Toast
+          message={message}
+          type="success"
+          onClear={() => setMessage("")}
+        />
       )}
     </div>
   );

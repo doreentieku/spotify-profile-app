@@ -21,12 +21,13 @@ export default function CreatePlaylist({
   profile,
   selectedTracks,
   setSelectedTracks,
-  playlistName, // <-- passed from parent
+  playlistName,
   onSuccess,
 }: Props) {
-  const [name, setName] = useState(playlistName); // local editable title
+  const [name, setName] = useState(playlistName);
   const [playlistDesc, setPlaylistDesc] = useState("");
   const [message, setMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
 
   // Sync parent-provided playlist name when it changes
   useEffect(() => {
@@ -66,17 +67,22 @@ export default function CreatePlaylist({
           uris: selectedTracks.map((t) => t.uri),
         }),
       });
-
-      setMessage(`Playlist "${data.name}" created!`);
-      setTimeout(() => setMessage(""), 5000);
       setSelectedTracks([]);
       setName(""); // reset
       setPlaylistDesc("");
       onSuccess?.(data.name);
+
+      setMessage(`Playlist "${data.name}" created!`);
+      setToastType("success");
+      setTimeout(() => setMessage(""), 5000);
+
     } catch (err) {
       console.error(err);
+
       setMessage("Failed to create playlist");
+      setToastType("error");
       setTimeout(() => setMessage(""), 5000);
+
     }
   };
 
@@ -106,9 +112,6 @@ export default function CreatePlaylist({
         Create Playlist
       </button>
 
-      {message && (
-        <div className="text-center text-sm text-green-500 mt-2 uppercase">{message}</div>
-      )}
     </div>
   );
 }
