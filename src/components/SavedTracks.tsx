@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
-import { Track } from "@/types/spotify";
+import { Track,Artist } from "@/types/spotify";
 import GenreBarChart from "./GenreBarChart";
 import { useGenreFilter } from "@/context/GenreFilterContext";
 import SelectedTracks from "@/components/SelectedTracks";
@@ -181,7 +181,7 @@ export default function SavedTracks({
       );
       const data = await res.json();
 
-      data.artists.forEach((artist: any) => {
+      data.artists.forEach((artist: Artist) => {
         genreMap[artist.id] = artist.genres;
       });
 
