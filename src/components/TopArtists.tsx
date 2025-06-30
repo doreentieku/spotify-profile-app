@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
-import { Track } from "@/types/spotify";
-import { Artist } from "@/types/spotify";
+import { Track,Artist,Album } from "@/types/spotify";
 import { ArtistAlbumsModal } from "@/components/ArtistAlbumsModal";
 import { AlbumTracksModal } from "@/components/AlbumTracksModal";
 
@@ -28,10 +27,10 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
   const logout = useSpotifyLogout();
 
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
-  const [artistAlbums, setArtistAlbums] = useState<any[]>([]);
+  const [artistAlbums, setArtistAlbums] = useState<Album[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [selectedAlbum, setSelectedAlbum] = useState<any | null>(null);
+  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [albumTracks, setAlbumTracks] = useState<Track[]>([]);
   const [isTracksModalOpen, setIsTracksModalOpen] = useState(false);
 
@@ -137,7 +136,7 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
     }
   };
 
-  const handleAlbumClick = (album: any) => {
+  const handleAlbumClick = (album: Album) => {
     setSelectedAlbum(album);
     fetchAlbumTracks(album.id);
   };
@@ -145,7 +144,9 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
   return (
     <div className="max-w-8xl mx-auto">
       <div className="flex justify-between items-center mb-4 px-4">
-        <h2 className="text-lg font-bold text-white pl-5">Top Played Artists</h2>
+        <h2 className="text-lg font-bold text-white pl-5">
+          Top Played Artists
+        </h2>
         <p>Click to view artist albums</p>
         <select
           value={timeRange}
@@ -189,7 +190,10 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
                   height={300}
                   className="w-full h-40 object-cover rounded-lg mb-3"
                 />
-                <h3 className="text-lg font-semibold"> #{index + 1} {artist.name}</h3>
+                <h3 className="text-lg font-semibold">
+                  {" "}
+                  #{index + 1} {artist.name}
+                </h3>
                 <p className="text-sm text-white/70 mb-2">
                   {artist.genres.slice(0, 2).join(", ") || ""}
                 </p>
@@ -250,6 +254,10 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
               setAlbumTracks([]);
             }}
           />
+        )}
+
+        {error && (
+          <p className="text-red-500 text-sm text-center mt-4">{error}</p>
         )}
       </div>
     </div>

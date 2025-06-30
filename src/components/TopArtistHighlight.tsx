@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Track, Artist } from "@/types/spotify";
 import { AlbumTracksModal } from "@/components/AlbumTracksModal";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,7 +22,10 @@ interface Album {
   external_urls: { spotify: string };
 }
 
-export default function TopArtistHighlight({ token, deviceId }: TopArtistProps) {
+export default function TopArtistHighlight({
+  token,
+  deviceId,
+}: TopArtistProps) {
   const [topArtist, setTopArtist] = useState<Artist | null>(null);
   const [latestRelease, setLatestRelease] = useState<Album | null>(null);
   const [isTracksModalOpen, setIsTracksModalOpen] = useState(false);
@@ -154,7 +158,7 @@ export default function TopArtistHighlight({ token, deviceId }: TopArtistProps) 
       {/* Main content */}
       <div className="relative z-10 text-center px-6">
         <h2 className="text-[1vw] text-white font-extrabold tracking-[0.5em] uppercase">
-          Your top artist
+          Your #1 Favorite Right Now
         </h2>
         <h1
           ref={titleRef}
@@ -184,20 +188,29 @@ export default function TopArtistHighlight({ token, deviceId }: TopArtistProps) 
               onClick={handleAlbumClick}
               className="hover:scale-110 transition-transform duration-300 cursor-pointer"
             >
-              <img
+              <Image
                 src={latestRelease.images[0]?.url}
                 alt={latestRelease.name}
-                className="w-32 h-32 md:w-40 md:h-40 rounded-lg shadow-xl border border-white/20"
+                width={160} // match closest to w-40
+                height={160}
+                className="rounded-lg shadow-xl border border-white/20"
+                style={{ objectFit: "cover" }}
               />
             </div>
 
             <p className="text-white text-lg mt-4 font-semibold">
               {latestRelease.name}
             </p>
-            <p className="text-sm text-gray-300">{latestRelease.release_date}</p>
+            <p className="text-sm text-gray-300">
+              {latestRelease.release_date}
+            </p>
           </div>
         )}
       </div>
+
+      {error && (
+        <p className="text-red-500 text-sm text-center mt-4">{error}</p>
+      )}
 
       {isTracksModalOpen && latestRelease && (
         <AlbumTracksModal
@@ -211,7 +224,11 @@ export default function TopArtistHighlight({ token, deviceId }: TopArtistProps) 
 
       {/* SVG overlay ring */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
-        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
           <circle
             cx="50"
             cy="50"

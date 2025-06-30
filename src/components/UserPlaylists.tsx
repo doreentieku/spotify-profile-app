@@ -54,7 +54,7 @@ export default function UserPlaylists({
     if (accessToken) {
       fetchPlaylists();
     }
-  }, [accessToken]);
+  }, [accessToken,logout]);
 
   const deletePlaylist = async (playlistId: string) => {
     try {
