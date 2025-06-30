@@ -3,7 +3,6 @@
 
 export default function Toast({
     message,
-    onClear,
     type = "success", // "success" or "error"
 }: {
     message: string;
