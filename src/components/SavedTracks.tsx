@@ -69,7 +69,7 @@ export default function SavedTracks({
         let nextUrl:
           | string
           | null = `https://api.spotify.com/v1/me/tracks?limit=50`;
-        let allItems: SavedTrackItem[] = [];
+        const allItems: SavedTrackItem[] = [];
         let totalFetched = 0;
         let totalExpected = 0;
 

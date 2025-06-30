@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import { IoIosAddCircleOutline } from "react-icons/io";
-// import useSpotifyProfile from "@/lib/useSpotifyProfile";
 import { Track } from "@/types/spotify";
 import SelectedTracks from "@/components/SelectedTracks";
 import Toast from "@/components/Toast";
@@ -149,9 +148,6 @@ export default function SearchWithPlaylist({
     setSelectedTracks((prev) => [...prev, ...newTracks]);
   };
 
-  const removeFromPlaylist = (id: string) => {
-    setSelectedTracks((prev) => prev.filter((t) => t.id !== id));
-  };
 
   return (
     <div className="py-8 space-y-10 max-w-8xl mx-auto text-white">

@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { FaSpotify } from "react-icons/fa";
-import Image from "next/image";
 
 const generateRandomString = (length: number) => {
   const possible =

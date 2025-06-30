@@ -21,3 +21,10 @@ export interface Artist {
   images: { url: string }[];
   external_urls: { spotify: string };
 }
+
+export interface Album {
+  id: string;
+  name: string;
+  release_date: string;
+  images: { url: string }[];
+}

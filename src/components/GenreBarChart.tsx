@@ -9,6 +9,13 @@ import {
   Tooltip,
 } from "recharts";
 
+type ClickedBar = {
+  payload: {
+    genre: string;
+    count: number;
+  };
+};
+
 import { useGenreFilter } from "@/context/GenreFilterContext";
 
 interface GenreBarChartProps {
@@ -38,7 +45,8 @@ export default function GenreBarChart({
         <BarChart data={chartData} barSize={40}>
           <XAxis dataKey="genre" tick={{ fill: "white", fontSize: 11 }} />
           <YAxis tick={{ fill: "white", fontSize: 12 }} />
-          <Tooltip labelClassName="backdrop-blur-lg"
+          <Tooltip
+            labelClassName="backdrop-blur-lg"
             contentStyle={{
               backgroundColor: "#222",
               border: "none",
@@ -50,7 +58,7 @@ export default function GenreBarChart({
             fill="#22c55e"
             radius={[10, 10, 0, 0]}
             onClick={(data) => {
-              const payload = (data as any).payload;
+              const { payload } = data as unknown as ClickedBar;
               if (payload?.genre) {
                 setSelectedGenre(payload.genre);
               }

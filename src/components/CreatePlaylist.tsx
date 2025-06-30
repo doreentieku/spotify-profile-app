@@ -26,9 +26,7 @@ export default function CreatePlaylist({
 }: Props) {
   const [name, setName] = useState(playlistName);
   const [playlistDesc, setPlaylistDesc] = useState("");
-  const [message, setMessage] = useState("");
-  const [toastType, setToastType] = useState<"success" | "error">("success");
-
+  
   // Sync parent-provided playlist name when it changes
   useEffect(() => {
     setName(playlistName);
@@ -71,18 +69,8 @@ export default function CreatePlaylist({
       setName(""); // reset
       setPlaylistDesc("");
       onSuccess?.(data.name);
-
-      setMessage(`Playlist "${data.name}" created!`);
-      setToastType("success");
-      setTimeout(() => setMessage(""), 5000);
-
     } catch (err) {
       console.error(err);
-
-      setMessage("Failed to create playlist");
-      setToastType("error");
-      setTimeout(() => setMessage(""), 5000);
-
     }
   };
 

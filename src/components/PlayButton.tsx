@@ -3,7 +3,6 @@
 
 import { usePlayTrack } from "@/hooks/usePlayTrack";
 import { CiPlay1 } from "react-icons/ci";
-import { useEffect } from "react";
 
 interface PlayButtonProps {
     uri: string;
