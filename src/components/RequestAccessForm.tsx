@@ -17,7 +17,7 @@ export default function RequestAccessForm() {
     });
 
     if (res.ok) {
-      setStatus('Request submitted! I’ll get back to you soon.');
+      setStatus('Request submitted! You will receive an email when you are added.');
       setName('');
       setEmail('');
     } else {
@@ -29,7 +29,7 @@ export default function RequestAccessForm() {
     <main className="relative flex flex-grow h-screen overflow-hidden">
       <div className="relative bg-gray-800 w-full h-screen flex flex-col items-center justify-center px-10 lg:px-24 py-10 space-y-6">
         <div className="text-white text-center space-y-4">
-          <h2 className="text-3xl font-bold">Request Access to spoticizr</h2>
+          <h2 className="text-3xl font-bold">Request Access to use spoticizr</h2>
           <p className="text-gray-300 text-sm">
             Fill out the form and to be added to the allowlist.
           </p>
