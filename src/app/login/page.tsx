@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { FaSpotify } from "react-icons/fa";
+import Link from "next/link";
 
 const generateRandomString = (length: number) => {
   const possible =
@@ -140,7 +141,7 @@ export default function LoginPage() {
       "user-read-playback-state",
       "user-read-currently-playing",
       "user-read-recently-played",
-      "user-library-read"
+      "user-library-read",
     ].join(" ");
 
     const params = new URLSearchParams({
@@ -169,14 +170,29 @@ export default function LoginPage() {
           </h1>
         </div>
 
-        <button
+        <div
           ref={bottomRef}
-          onClick={loginWithSpotify}
-          className="flex items-center gap-2 bg-green-500/20 hover:bg-green-700/20 backdrop-blur-md rounded-lg px-6 py-3 text-white font-bold cursor-pointer"
+          className="flex flex-col items-center justify-center space-y-4 mt-10"
         >
-          <FaSpotify />
-          <span>Login with Spotify</span>
-        </button>
+          <p className="text-sm text-gray-300">
+            First time here? You’ll need to request access before connecting.
+          </p>
+
+          <button
+            onClick={loginWithSpotify}
+            className="flex items-center gap-2 bg-green-500/20 hover:bg-green-700/20 backdrop-blur-md rounded-lg px-6 py-3 text-white font-bold cursor-pointer"
+          >
+            <FaSpotify className="text-lg" />
+            <span>Connect with Spotify</span>
+          </button>
+
+          <Link
+            href="/request-access"
+            className="text-sm text-white hover:underline mt-2"
+          >
+            Request Access
+          </Link>
+        </div>
       </div>
 
       {/* Animated SVG overlay */}
