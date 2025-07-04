@@ -50,6 +50,7 @@ npm install
 NEXT_PUBLIC_SPOTIFY_CLIENT_ID=your_client_id
 NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET=your_client_secret
 NEXT_PUBLIC_SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/login
+ALLOWLIST_JSON={"allowed":["email1@example.com","email2@example.com"]}
 ```
 
 ## Run the Development Server
