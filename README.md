@@ -2,7 +2,7 @@
 
 Explore your Spotify profile, top tracks, top artists, genres, and more with powerful visualizations and personalized insights.
 
-**Try it out:** [spoticizr.vercel.app/login](https://spoticizr.vercel.app/login)
+**Try it out:** [spoticizr.vercel.app/login](https://spoticizr.vercel.app/login) - A **Spotify Premium account** (required for playback features)
 
 ---
 
