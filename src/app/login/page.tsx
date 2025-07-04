@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaSpotify } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { HiOutlineMail } from "react-icons/hi";
+
 import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -199,7 +202,7 @@ export default function LoginPage() {
       </div>
 
       {/* Animated SVG overlay */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-1">
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
         <svg
           className="w-full h-full"
           viewBox="0 0 100 100"
@@ -225,6 +228,34 @@ export default function LoginPage() {
           </circle>
         </svg>
       </div>
+      <footer className="absolute bottom-4 w-full flex flex-col items-center justify-center text-white text-sm opacity-80 space-y-2 z-10">
+        <div className="flex space-x-4">
+          <a
+            href="https://github.com/doreentieku"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+          >
+            <FaGithub className="text-xl hover:text-green-400 transition" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/ofosua-tieku"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <FaLinkedin className="text-xl hover:text-blue-400 transition" />
+          </a>
+          <a
+            href="mailto:dofosuatieku@gmail.com"
+            aria-label="Email"
+          >
+            <HiOutlineMail className="text-xl hover:text-red-400 transition" />
+          </a>
+        </div>
+        <p className="text-xs text-gray-400">© 2025 Doreen T.</p>
+      </footer>
+
     </main>
   );
 }
