@@ -15,8 +15,15 @@ Explore your Spotify profile, top tracks, top artists, genres, and more with pow
 - Search for tracks  
 - Play tracks in app and add to playlist
 - Fully responsive and modern UI (Next.js + Tailwind CSS + GSAP)
+---
+
+## Preview
+
+![App Preview](./example.png)
 
 ---
+
+
 
 ## Prerequisites
 
@@ -61,7 +68,7 @@ bun dev
 Then open your browser and visit: http://127.0.0.1:3000
 
 ### Built With
- - [Nextjs](https://nextjs.org/)
+ - [Next.js](https://nextjs.org/)
  - [GSAP](https://gsap.com/)
  - [Tailwind CSS](https://tailwindcss.com/)
  - [Spotify Web API](https://developer.spotify.com/documentation/web-api)
