@@ -19,11 +19,9 @@ Explore your Spotify profile, top tracks, top artists, genres, and more with pow
 
 ## Preview
 
-![App Preview](./example.png)
+![App Preview](./public/example.png)
 
 ---
-
-
 
 ## Prerequisites
 
