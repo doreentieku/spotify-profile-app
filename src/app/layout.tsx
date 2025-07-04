@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next";
 import { Varela_Round } from "next/font/google";
 import "./globals.css";
@@ -25,6 +26,7 @@ export default function RootLayout({
         className={`${varelaRound.className} antialiased`}
       >
         {children}
+         <Analytics />
       </body>
     </html>
   );
