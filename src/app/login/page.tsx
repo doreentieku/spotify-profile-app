@@ -3,8 +3,11 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaSpotify } from "react-icons/fa";
 import Link from "next/link";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const generateRandomString = (length: number) => {
   const possible =
@@ -158,7 +161,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative flex flex-grow h-screen overflow-hidden">
+    <main ref={containerRef} className="relative flex flex-grow h-screen overflow-hidden">
       {/* 🔹 Foreground Content */}
       <div className="relative bg-gray-800 w-full h-screen flex flex-col items-center justify-center px-10 lg:px-24 py-10 space-y-6">
         <div ref={topRef} className="text-center space-y-2">
