@@ -73,7 +73,7 @@ export default function RecentlyPlayedTrackCarousel({
     title: track.name,
     src: track.album.images[0]?.url,
     content: (
-      <div className="text-white p-4 space-y-4 text-center">
+      <div className="text-orange-500 p-2 space-y-4 text-center">
         <p className="text-base font-semibold">
           {track.artists.map((a) => a.name).join(", ")}
         </p>
