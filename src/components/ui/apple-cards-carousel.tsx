@@ -73,13 +73,6 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
     const handleCardClose = (index: number) => {
         if (carouselRef.current) {
-            const cardWidth = isMobile() ? 230 : 384; // (md:w-96)
-            const gap = isMobile() ? 4 : 8;
-            const scrollPosition = (cardWidth + gap) * (index + 1);
-            carouselRef.current.scrollTo({
-                left: scrollPosition,
-                behavior: "smooth",
-            });
             setCurrentIndex(index);
         }
     };
@@ -199,44 +192,51 @@ export const Card = ({
         <>
             <AnimatePresence>
                 {open && (
-                    <div className="fixed inset-0 z-50 h-screen overflow-auto">
+                    <>
+                        {/* Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 h-full w-full bg-black/80 backdrop-blur-lg"
+                            className="fixed inset-0 z-40 h-full w-full bg-black/80 backdrop-blur-lg"
                         />
+
+                        {/* Modal container */}
                         <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
                             ref={containerRef}
                             layoutId={layout ? `card-${card.title}` : undefined}
-                            className="sticky z-[60] top-90 mx-auto max-h-screen h-fit max-w-5xl rounded-3xl bg-neutral-900 p-4 font-sans md:p-10"
+                            className="absolute z-50 left-1/2 -translate-x-1/2 mt-20 max-w-5xl w-full rounded-3xl bg-neutral-900 p-4 font-sans md:p-10"
                         >
                             <button
-                                className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-white"
+                                className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white"
                                 onClick={handleClose}
                             >
                                 <IconX className="h-6 w-6 text-neutral-900" />
                             </button>
+
                             <motion.p
                                 layoutId={layout ? `category-${card.title}` : undefined}
                                 className="text-base font-medium text-white"
                             >
                                 {card.category}
                             </motion.p>
+
                             <motion.p
                                 layoutId={layout ? `title-${card.title}` : undefined}
                                 className="mt-4 text-2xl font-semibold md:text-5xl text-white"
                             >
                                 {card.title}
                             </motion.p>
+
                             <div className="py-10">{card.content}</div>
                         </motion.div>
-                    </div>
+                    </>
                 )}
             </AnimatePresence>
+
             <motion.button
                 layoutId={layout ? `card-${card.title}` : undefined}
                 onClick={handleOpen}
