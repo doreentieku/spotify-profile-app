@@ -15,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
-import Image, { ImageProps } from "next/image";
+import Image from "next/image";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 
 interface CarouselProps {
@@ -110,7 +110,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                         )}
                     >
                         {items.map((item, index) => (
-                            // delay starts when its in view.. possibly with gsap??
+                            // animation should start when its in view.. possibly with gsap??
                             <motion.div
                                 initial={{
                                     opacity: 0,
@@ -165,7 +165,7 @@ export const Card = ({
 }) => {
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const { onCardClose, currentIndex } = useContext(CarouselContext);
+    const { onCardClose } = useContext(CarouselContext);
 
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
@@ -212,7 +212,7 @@ export const Card = ({
                             exit={{ opacity: 0 }}
                             ref={containerRef}
                             layoutId={layout ? `card-${card.title}` : undefined}
-                            className="relative z-[60] mx-auto max-h-screen h-fit max-w-5xl rounded-3xl bg-neutral-900 p-4 font-sans md:p-10"
+                            className="sticky z-[60] top-90 mx-auto max-h-screen h-fit max-w-5xl rounded-3xl bg-neutral-900 p-4 font-sans md:p-10"
                         >
                             <button
                                 className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
@@ -273,12 +273,15 @@ export const BlurImage = ({
     src,
     alt,
     className,
+    fill = false,
+    sizes = "(min-width: 768px) 384px, 224px",
     ...rest
 }: {
     src: string;
     alt: string;
     className?: string;
     fill?: boolean;
+    sizes?: string;
 }) => {
     const [isLoading, setLoading] = useState(true);
 
@@ -291,10 +294,13 @@ export const BlurImage = ({
             )}
             src={src}
             alt={alt}
-            onLoadingComplete={() => setLoading(false)}
+            fill={fill}
+            sizes={fill ? sizes : undefined}
+            onLoad={() => setLoading(false)}
             placeholder="blur"
-            blurDataURL={src} // This should ideally be a base64-encoded placeholder
+            blurDataURL={src}
             {...rest}
         />
     );
 };
+

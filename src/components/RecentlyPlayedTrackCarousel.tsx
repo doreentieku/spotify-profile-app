@@ -68,7 +68,7 @@ export default function RecentlyPlayedTrackCarousel({
     )
   );
 
-  const cards = filteredTracks.map((track, index) => ({
+  const cards = filteredTracks.map((track) => ({
     category: track.album.name,
     title: track.name,
     src: track.album.images[0]?.url,
