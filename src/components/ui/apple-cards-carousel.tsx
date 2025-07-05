@@ -215,20 +215,20 @@ export const Card = ({
                             className="sticky z-[60] top-90 mx-auto max-h-screen h-fit max-w-5xl rounded-3xl bg-neutral-900 p-4 font-sans md:p-10"
                         >
                             <button
-                                className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
+                                className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-white"
                                 onClick={handleClose}
                             >
-                                <IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
+                                <IconX className="h-6 w-6 text-neutral-900" />
                             </button>
                             <motion.p
                                 layoutId={layout ? `category-${card.title}` : undefined}
-                                className="text-base font-medium text-black dark:text-white"
+                                className="text-base font-medium text-white"
                             >
                                 {card.category}
                             </motion.p>
                             <motion.p
                                 layoutId={layout ? `title-${card.title}` : undefined}
-                                className="mt-4 text-2xl font-semibold text-neutral-700 md:text-5xl dark:text-white"
+                                className="mt-4 text-2xl font-semibold md:text-5xl text-white"
                             >
                                 {card.title}
                             </motion.p>
@@ -240,7 +240,7 @@ export const Card = ({
             <motion.button
                 layoutId={layout ? `card-${card.title}` : undefined}
                 onClick={handleOpen}
-                className="relative z-10 flex h-80 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 md:h-[40rem] md:w-96 dark:bg-neutral-900"
+                className="relative z-10 flex h-80 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl md:h-[40rem] md:w-96 bg-neutral-900"
             >
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
                 <div className="relative z-40 p-8">
