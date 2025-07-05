@@ -52,6 +52,8 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
     }, [initialScroll]);
 
     const checkScrollability = () => {
+        console.log("carouselRef", carouselRef)
+
         if (carouselRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
             setCanScrollLeft(scrollLeft > 0);
@@ -121,7 +123,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                                     y: 0,
                                     transition: {
                                         duration: 0.5,
-                                        delay: 0.6 * index,
+                                        delay: 0.2 * index,
                                         ease: "easeOut",
                                     },
                                 }}
