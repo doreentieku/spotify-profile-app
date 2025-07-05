@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tabler/icons-react": "^3.34.0",
     "@vercel/analytics": "^1.5.0",
+    "clsx": "^2.1.1",
     "d3": "^7.9.0",
+    "framer-motion": "^12.23.0",
     "gsap": "^3.13.0",
     "lucide-react": "^0.518.0",
     "next": "15.3.4",
@@ -19,6 +22,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "recharts": "^3.0.2",
+    "tailwind-merge": "^3.3.1",
     "use-debounce": "^10.0.5"
   },
   "devDependencies": {

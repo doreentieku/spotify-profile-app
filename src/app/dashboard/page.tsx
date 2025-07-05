@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { initializeSpotifyPlayer } from "@/lib/spotifyPlayer";
-import RecentlyPlayedTracks from "@/components/RecentlyPlayedTracks";
+// import RecentlyPlayedTracks from "@/components/RecentlyPlayedTracks";
+import RecentlyPlayedTracks from "@/components/RecentlyPlayedTrackCarousel";
 import TopTracks from "@/components/TopTracks";
 import TopArtists from "@/components/TopArtists";
 import TopArtistHighlight from "@/components/TopArtistHighlight";

@@ -111,12 +111,12 @@ export default function RecentlyPlayedTracks({
       )}
 
       <div className="relative px-4">
-        <button
+        {/* <button
           onClick={() => scrollContainer("left")}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full hidden md:block cursor-pointer"
         >
           <ArrowLeft size={20} />
-        </button>
+        </button> */}
 
         <div
           id="recently-played-scroll-container"
@@ -173,12 +173,12 @@ export default function RecentlyPlayedTracks({
             ))}
           </div>
         </div>
-        <button
+        {/* <button
           onClick={() => scrollContainer("right")}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full hidden md:block cursor-pointer"
         >
           <ArrowRight size={20} />
-        </button>
+        </button> */}
       </div>
     </div>
   );
