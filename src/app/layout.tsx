@@ -4,7 +4,7 @@ import { Varela_Round } from "next/font/google";
 import "./globals.css";
 
 const varelaRound = Varela_Round({
-  weight: "400", 
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -26,7 +26,7 @@ export default function RootLayout({
         className={`${varelaRound.className} antialiased`}
       >
         {children}
-         <Analytics />
+        <Analytics />
       </body>
     </html>
   );

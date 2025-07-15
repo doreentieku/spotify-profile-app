@@ -73,21 +73,27 @@ export default function RecentlyPlayedTrackCarousel({
     title: track.name,
     src: track.album.images[0]?.url,
     content: (
-      <div className="text-orange-500 p-2 space-y-4 text-center">
-        <p className="text-base font-semibold">
-          {track.artists.map((a) => a.name).join(", ")}
-        </p>
-        <div className="text-sm italic text-white/70">
-          Popularity: {track.popularity}/100
-        </div>
-        <PlayButton
-          uri={track.uri}
-          accessToken={accessToken}
-          deviceId={deviceId}
+      <div className="relative w-full h-full">
+        <img
+          src={track.album.images[0]?.url}
+          alt={track.name}
+          className="w-full h-64 object-cover rounded-xl"
         />
+        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center rounded-xl space-y-3">
+          <h3 className="text-white text-lg font-semibold">{track.name}</h3>
+          <p className="text-orange-400">{track.artists.map((a) => a.name).join(", ")}</p>
+          <p className="text-white/70 text-sm italic">Popularity: {track.popularity}/100</p>
+          <PlayButton
+            uri={track.uri}
+            accessToken={accessToken}
+            deviceId={deviceId}
+          />
+        </div>
       </div>
     ),
   }));
+
+
 
   return (
     <div className="w-full h-full py-20">
