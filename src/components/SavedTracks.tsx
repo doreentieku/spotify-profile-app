@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import PlayButton from "@/components/PlayButton";
 import useSpotifyLogout from "@/lib/useSpotifyLogout";
-import { Track,Artist } from "@/types/spotify";
+import { Track, Artist } from "@/types/spotify";
 import GenreBarChart from "./GenreBarChart";
 import { useGenreFilter } from "@/context/GenreFilterContext";
 import SelectedTracks from "@/components/SelectedTracks";
@@ -52,7 +52,7 @@ export default function SavedTracks({
 
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [playlistName, setPlaylistName] = useState(
-    "SPOTICIZR - Filtered Playlist"
+    "Spoticizr - Filtered Playlist"
   );
   const [message, setMessage] = useState("");
 
@@ -150,13 +150,13 @@ export default function SavedTracks({
   useEffect(() => {
     if (selectedGenre === "") {
       setFilteredTracks(allTracks);
-      setPlaylistName("SPOTICIZR - Customized Saved Tracks");
+      setPlaylistName("Spoticizr - Customized Saved Tracks");
     } else {
       const genreFiltered = allTracks.filter((t) =>
         t.genres?.includes(selectedGenre)
       );
       setFilteredTracks(genreFiltered);
-      setPlaylistName(`SPOTICIZR - ${selectedGenre} Tracks`);
+      setPlaylistName(`Spoticizr - ${selectedGenre} Tracks`);
     }
     setPage(1);
   }, [selectedGenre, allTracks]);

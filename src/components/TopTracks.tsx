@@ -23,7 +23,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("medium_term");
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [playlistName, setPlaylistName] = useState(
-    "SPOTICIZR - Custom Playlist"
+    "Spoticizr - Custom Playlist"
   );
   const [message, setMessage] = useState("");
 
@@ -76,7 +76,7 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
   };
 
   useEffect(() => {
-    setPlaylistName(`SPOTICIZR - Top Played Tracks of ${timeRange}`);
+    setPlaylistName(`Spoticizr - Top Played Tracks of ${timeRange}`);
   }, [selectedTracks]);
 
   function getPopularityColor(popularity: number) {

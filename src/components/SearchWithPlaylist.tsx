@@ -22,7 +22,7 @@ export default function SearchWithPlaylist({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [playlistName, setPlaylistName] = useState(
-    "SPOTICIZR - Custom Playlist"
+    "Spoticizr - Custom Playlist"
   );
   const [message, setMessage] = useState("");
   // const profile = useSpotifyProfile(accessToken);
@@ -56,10 +56,10 @@ export default function SearchWithPlaylist({
     if (searchInput.trim()) {
       const title = searchInput.trim();
       setPlaylistName(
-        `SPOTICIZR - ${title[0].toUpperCase() + title.slice(1)} MIX`
+        `Spoticizr - ${title[0].toUpperCase() + title.slice(1)} MIX`
       );
     } else {
-      setPlaylistName("SPOTICIZR - Custom Playlist");
+      setPlaylistName("Spoticizr - Custom Playlist");
     }
   }, [searchInput]);
 
@@ -96,7 +96,7 @@ export default function SearchWithPlaylist({
     setSearchInput(trackName);
     setSuggestions([]);
     setPlaylistName(
-      `SPOTICIZR - ${trackName[0].toUpperCase() + trackName.slice(1)} MIX`
+      `Spoticizr - ${trackName[0].toUpperCase() + trackName.slice(1)} MIX`
     );
     fetchSearchResult(trackName);
   };
@@ -120,7 +120,7 @@ export default function SearchWithPlaylist({
 
       // Set playlist name based on fetched query
       setPlaylistName(
-        `SPOTICIZR - ${query[0].toUpperCase() + query.slice(1)} MIX`
+        `Spoticizr - ${query[0].toUpperCase() + query.slice(1)} mix`
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
