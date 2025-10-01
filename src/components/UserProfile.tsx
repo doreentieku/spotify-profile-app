@@ -47,6 +47,9 @@ export default function UserProfile({ displayName, country, product }: Props) {
 
       {/* PlayerBar */}
       <PlayerBar accessToken={token} />
+      <footer className="absolute bottom-4 w-full flex flex-col items-center justify-center text-white text-sm opacity-80 space-y-2 z-100">
+        <p className="text-xs text-gray-400">© 2025 Doreen Tieku.</p>
+      </footer>
     </div>
   );
 }

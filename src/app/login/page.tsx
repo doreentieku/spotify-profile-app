@@ -253,7 +253,7 @@ export default function LoginPage() {
             <HiOutlineMail className="text-xl hover:text-red-400 transition" />
           </a>
         </div>
-        <p className="text-xs text-gray-400">© 2025 Doreen T.</p>
+        <p className="text-xs text-gray-400">© 2025 Doreen Tieku.</p>
       </footer>
 
     </main>
