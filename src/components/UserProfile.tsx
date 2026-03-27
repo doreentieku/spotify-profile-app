@@ -15,22 +15,22 @@ export default function UserProfile({ displayName, country, product }: Props) {
 
   return (
     <div>
-      <nav className="space-x-6 md:flex mb-2">
-        <a href="/dashboard" className="text-gray-400 hover:text-white">
+      <nav className="space-x-6 md:flex mb-2 ">
+        <a href="/dashboard" className="hover:text-gray-200">
           Home
         </a>
-        <a href="/dashboard/liked-tracks" className="text-gray-400 hover:text-white">
+        <a href="/dashboard/liked-tracks" className="hover:text-gray-200">
           Liked Tracks
         </a>
         <a
           href="/dashboard/saved-playlists"
-          className="text-gray-400 hover:text-white"
+          className="hover:text-gray-200"    
         >
           Saved Playlists
         </a>
         <a
-          href="/dashboard/search-tracks"
-          className="text-gray-400 hover:text-white"
+          href="/dashboard/search-tracks" 
+          className="hover:text-gray-200"
         >
           Search Tracks
         </a>
@@ -39,8 +39,8 @@ export default function UserProfile({ displayName, country, product }: Props) {
       <h1 className="text-7xl font-bold tracking-wider uppercase mb-1">
         Welcome, {displayName}
       </h1>
-      <p className="text-white/70 text-sm uppercase">{product}</p>
-      <p className="text-white/70 text-sm uppercase">country: {country}</p>
+      <p className="text-sm uppercase">{product}</p>
+      <p className="text-sm uppercase">country: {country}</p>
 
       {/* Self-contained logout button */}
       <LogoutButton />

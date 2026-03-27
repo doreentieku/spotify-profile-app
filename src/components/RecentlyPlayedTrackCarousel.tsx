@@ -97,7 +97,7 @@ export default function RecentlyPlayedTrackCarousel({
 
   return (
     <div className="w-full h-full py-20">
-      <h2 className="text-xl md:text-5xl font-bold text-neutral-800 dark:text-neutral-200 font-sans text-center mb-8">
+      <h2 className="text-xl md:text-5xl font-bold font-sans text-center mb-8">
         Your Recently Played Tracks
       </h2>
 
@@ -106,7 +106,7 @@ export default function RecentlyPlayedTrackCarousel({
         placeholder="Filter by artist"
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
-        className="w-full max-w-md mx-auto mb-10 px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg placeholder-white/60 block"
+        className="w-full max-w-md mx-auto mb-10 px-4 py-2 bg-white/10 border border-white/20 rounded-lg placeholder-gray-600/60 block"
       />
 
       {error ? (

@@ -74,10 +74,10 @@ export default function TopArtists({ accessToken, deviceId }: TopArtistsProps) {
   }, [accessToken, timeRange]);
 
   function getPopularityColor(popularity: number) {
-    if (popularity >= 70) return "bg-green-400";
-    if (popularity >= 40) return "bg-yellow-400";
-    if (popularity < 40) return "bg-red-400";
-    return "bg-red-400";
+    if (popularity >= 70) return "bg-amber-700";
+    if (popularity >= 40) return "bg-amber-700";
+    if (popularity < 40) return "bg-amber-700";
+    return "bg-amber-700";
   }
   const scrollContainer = (direction: "left" | "right") => {
     const container = document.getElementById("artists-scroll-container");

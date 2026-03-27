@@ -193,9 +193,9 @@ export default function SavedTracks({
   };
 
   function getPopularityColor(popularity: number) {
-    if (popularity >= 70) return "bg-red-400";
-    if (popularity >= 40) return "bg-green-400";
-    return "bg-yellow-400";
+    if (popularity >= 70) return "bg-amber-700";
+    if (popularity >= 40) return "bg-amber-700";
+    return "bg-amber-700";
   }
 
   return (

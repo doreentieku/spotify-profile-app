@@ -127,9 +127,9 @@ export default function TopArtistHighlight({
   }, [topArtist]);
 
   function getPopularityColor(popularity: number) {
-    if (popularity >= 70) return "bg-green-400";
-    if (popularity >= 40) return "bg-yellow-400";
-    return "bg-red-400";
+    if (popularity >= 70) return "bg-amber-700";
+    if (popularity >= 40) return "bg-amber-700";
+    return "bg-amber-700";
   }
 
   if (!topArtist) return null;
@@ -157,21 +157,21 @@ export default function TopArtistHighlight({
 
       {/* Main content */}
       <div className="relative z-10 text-center px-6">
-        <h2 className="text-[1vw] text-white font-extrabold tracking-[0.5em] uppercase">
+        <h2 className="text-[1vw] font-extrabold tracking-[0.5em] uppercase">
           Your #1 Favorite Right Now
         </h2>
         <h1
           ref={titleRef}
-          className="text-[10vw] md:text-[7vw] text-white font-extrabold tracking-[0.5em] uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+          className="text-[10vw] md:text-[7vw] font-extrabold tracking-[0.5em] uppercase drop-shadow-[0_0_20px_rgba(255,255,255,20)]"
         >
           {topArtist.name}
         </h1>
-        <p className="text-sm md:text-lg text-gray-300 mt-4 tracking-wide">
+        <p className="text-sm md:text-lg mt-4 tracking-wide">
           {topArtist.genres.slice(0, 3).join(" • ")}
         </p>
 
-        <p>Global population</p>
-        <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
+        <p className="">Global population</p>
+        <div className="w-full rounded-full h-2 overflow-hidden">
           <div
             className={`${getPopularityColor(
               topArtist.popularity
@@ -182,8 +182,7 @@ export default function TopArtistHighlight({
 
         {latestRelease && (
           <div className="mt-8 flex flex-col items-center justify-center">
-            <p className="text-sm text-gray-300">Latest album</p>
-
+            <p className="text-md">Latest album</p>
             <div
               onClick={handleAlbumClick}
               className="hover:scale-110 transition-transform duration-300 cursor-pointer"
@@ -191,17 +190,17 @@ export default function TopArtistHighlight({
               <Image
                 src={latestRelease.images[0]?.url}
                 alt={latestRelease.name}
-                width={160} // match closest to w-40
-                height={160}
+                width={180} // match closest to w-40
+                height={180}
                 className="rounded-lg shadow-xl border border-white/20"
                 style={{ objectFit: "cover" }}
               />
             </div>
 
-            <p className="text-white text-lg mt-4 font-semibold">
+            <p className="text-lg mt-4 font-semibold">
               {latestRelease.name}
             </p>
-            <p className="text-sm text-gray-300">
+            <p className="text-md">
               {latestRelease.release_date}
             </p>
           </div>

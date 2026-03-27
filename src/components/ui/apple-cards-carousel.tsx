@@ -124,18 +124,18 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                 </div>
                 <div className="mr-10 flex justify-end gap-2">
                     <button
-                        className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
+                        className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-600 hover:cursor-pointer disabled:opacity-50 hover:disabled:cursor-not-allowed"
                         onClick={scrollLeft}
                         disabled={!canScrollLeft}
                     >
-                        <IconArrowNarrowLeft className="h-6 w-6 text-gray-500" />
+                        <IconArrowNarrowLeft className="h-6 w-6 text-white" />
                     </button>
                     <button
-                        className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
+                        className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-600 hover:cursor-pointer disabled:opacity-50 hover:disabled:cursor-not-allowed"
                         onClick={scrollRight}
                         disabled={!canScrollRight}
                     >
-                        <IconArrowNarrowRight className="h-6 w-6 text-gray-500" />
+                        <IconArrowNarrowRight className="h-6 w-6 text-white" />
                     </button>
                 </div>
             </div>
@@ -210,12 +210,12 @@ export const Card = ({
                                 className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white"
                                 onClick={handleClose}
                             >
-                                <IconX className="h-6 w-6 text-neutral-900" />
+                                <IconX className="h-6 w-6 text-amber-900" />
                             </button>
 
                             <motion.p
                                 layoutId={layout ? `category-${card.title}` : undefined}
-                                className="text-base font-medium text-white"
+                                className="text-base font-medium text-amber-600 uppercase"
                             >
                                 {card.category}
                             </motion.p>
@@ -242,7 +242,7 @@ export const Card = ({
                 <div className="relative z-40 p-8">
                     <motion.p
                         layoutId={layout ? `category-${card.category}` : undefined}
-                        className="text-left font-sans text-sm font-medium text-white md:text-base"
+                        className="text-left font-sans text-lg text-amber-500 md:text-base"
                     >
                         {card.category}
                     </motion.p>

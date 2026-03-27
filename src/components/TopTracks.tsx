@@ -80,10 +80,10 @@ export default function TopTracks({ accessToken, deviceId }: TopTracksProps) {
   }, [selectedTracks]);
 
   function getPopularityColor(popularity: number) {
-    if (popularity >= 70) return "bg-green-400";
-    if (popularity >= 40) return "bg-yellow-400";
-    if (popularity < 40) return "bg-red-400";
-    return "bg-red-400";
+    if (popularity >= 70) return "bg-amber-700";
+    if (popularity >= 40) return "bg-amber-700";
+    if (popularity < 40) return "bg-amber-700";
+    return "bg-amber-700";
   }
 
   const scrollContainerTopTracks = (direction: "left" | "right") => {
